@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="gTV-IL-0wX" customClass="ShowCaseCollectionViewCell" customModule="MovieApp" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="390" height="199"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="390" height="199"/>
+                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <subviews>
+                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="mulan" translatesAutoresizingMaskIntoConstraints="NO" id="2E6-yM-yK9">
+                        <rect key="frame" x="0.0" y="0.0" width="390" height="199"/>
+                    </imageView>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="i2v-cU-yKh">
+                        <rect key="frame" x="0.0" y="0.0" width="390" height="199"/>
+                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.35180670529801328" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                    </view>
+                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="play.circle.fill" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="CK6-fZ-hTN">
+                        <rect key="frame" x="175" y="80" width="40" height="39"/>
+                        <color key="tintColor" systemColor="systemYellowColor"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="40" id="0Jh-6c-7WK"/>
+                            <constraint firstAttribute="height" constant="40" id="rlW-I4-QJy"/>
+                        </constraints>
+                    </imageView>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="09 March 2020" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4Lf-U9-3yt">
+                        <rect key="frame" x="12" y="169.5" width="94.5" height="17.5"/>
+                        <fontDescription key="fontDescription" name="GeezaPro" family="Geeza Pro" pointSize="14"/>
+                        <color key="textColor" systemColor="systemGray3Color"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Mulan (2020)" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="L2u-ya-ROM">
+                        <rect key="frame" x="12" y="143" width="366" height="22.5"/>
+                        <fontDescription key="fontDescription" name="GeezaPro-Bold" family="Geeza Pro" pointSize="18"/>
+                        <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                </subviews>
+            </view>
+            <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
+            <constraints>
+                <constraint firstItem="2E6-yM-yK9" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="7Ep-1V-2iF"/>
+                <constraint firstAttribute="trailing" secondItem="L2u-ya-ROM" secondAttribute="trailing" constant="12" id="BVK-21-gcu"/>
+                <constraint firstItem="i2v-cU-yKh" firstAttribute="leading" secondItem="2E6-yM-yK9" secondAttribute="leading" id="C37-J6-g98"/>
+                <constraint firstItem="4Lf-U9-3yt" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="12" id="Ctp-6e-Wjf"/>
+                <constraint firstItem="i2v-cU-yKh" firstAttribute="bottom" secondItem="2E6-yM-yK9" secondAttribute="bottom" id="DzI-37-UOo"/>
+                <constraint firstItem="i2v-cU-yKh" firstAttribute="centerY" secondItem="2E6-yM-yK9" secondAttribute="centerY" id="IHd-BW-1Rd"/>
+                <constraint firstItem="CK6-fZ-hTN" firstAttribute="centerY" secondItem="gTV-IL-0wX" secondAttribute="centerY" id="IY8-dm-XCt"/>
+                <constraint firstItem="CK6-fZ-hTN" firstAttribute="centerX" secondItem="gTV-IL-0wX" secondAttribute="centerX" id="Or4-eY-fbe"/>
+                <constraint firstItem="i2v-cU-yKh" firstAttribute="trailing" secondItem="2E6-yM-yK9" secondAttribute="trailing" id="Sk6-EW-61k"/>
+                <constraint firstItem="L2u-ya-ROM" firstAttribute="leading" secondItem="4Lf-U9-3yt" secondAttribute="leading" id="VYJ-Qu-eIk"/>
+                <constraint firstItem="4Lf-U9-3yt" firstAttribute="top" secondItem="L2u-ya-ROM" secondAttribute="bottom" constant="4" id="aii-ev-G2E"/>
+                <constraint firstAttribute="bottom" secondItem="2E6-yM-yK9" secondAttribute="bottom" id="fpA-FB-HOx"/>
+                <constraint firstItem="2E6-yM-yK9" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="h5L-G4-dEd"/>
+                <constraint firstAttribute="trailing" secondItem="2E6-yM-yK9" secondAttribute="trailing" id="hBO-j1-5RE"/>
+                <constraint firstAttribute="bottom" secondItem="4Lf-U9-3yt" secondAttribute="bottom" constant="12" id="r8j-ej-Lz4"/>
+            </constraints>
+            <size key="customSize" width="390" height="199"/>
+            <connections>
+                <outlet property="imageBackdrop" destination="2E6-yM-yK9" id="iw0-eH-O7d"/>
+                <outlet property="lblMovieTitle" destination="L2u-ya-ROM" id="umu-s2-bxd"/>
+                <outlet property="lblReleaseDate" destination="4Lf-U9-3yt" id="svS-e0-9j8"/>
+            </connections>
+            <point key="canvasLocation" x="378.26086956521743" y="137.61160714285714"/>
+        </collectionViewCell>
+    </objects>
+    <resources>
+        <image name="mulan" width="333.33334350585938" height="187.66667175292969"/>
+        <image name="play.circle.fill" catalog="system" width="128" height="121"/>
+        <systemColor name="systemGray3Color">
+            <color red="0.7803921568627451" green="0.7803921568627451" blue="0.80000000000000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+        <systemColor name="systemYellowColor">
+            <color red="1" green="0.80000000000000004" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+    </resources>
+</document>

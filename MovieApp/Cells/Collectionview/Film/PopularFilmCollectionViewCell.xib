@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="gTV-IL-0wX" customClass="PopularFilmCollectionViewCell" customModule="MovieApp" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="142" height="243"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="142" height="243"/>
+                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1pm-JF-Jnr">
+                        <rect key="frame" x="0.0" y="0.0" width="142" height="243"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="shadow&amp;bone" translatesAutoresizingMaskIntoConstraints="NO" id="5fn-AR-s0H">
+                                <rect key="frame" x="0.0" y="0.0" width="142" height="180"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="180" id="ztV-CO-MLY"/>
+                                </constraints>
+                            </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Shadow And Bone" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zeO-2M-nIv">
+                                <rect key="frame" x="0.0" y="190" width="117" height="17.5"/>
+                                <fontDescription key="fontDescription" name="GeezaPro" family="Geeza Pro" pointSize="14"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="8.2" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nA3-n1-WFp">
+                                <rect key="frame" x="0.0" y="213.5" width="20" height="17.5"/>
+                                <fontDescription key="fontDescription" name="GeezaPro-Bold" family="Geeza Pro" pointSize="14"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hEo-9Q-ycq" customClass="RatingControl" customModule="MovieApp" customModuleProvider="target">
+                                <rect key="frame" x="30" y="214.5" width="80" height="16"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="80" id="1CV-wo-qKE"/>
+                                    <constraint firstAttribute="height" constant="16" id="4zQ-vm-ZWR"/>
+                                </constraints>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="size" keyPath="starSize">
+                                        <size key="value" width="16" height="16"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="startCount">
+                                        <integer key="value" value="5"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="rating">
+                                        <integer key="value" value="4"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                            </stackView>
+                        </subviews>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="5fn-AR-s0H" secondAttribute="trailing" id="72Y-0y-59d"/>
+                            <constraint firstItem="hEo-9Q-ycq" firstAttribute="centerY" secondItem="nA3-n1-WFp" secondAttribute="centerY" id="9X7-bm-bkD"/>
+                            <constraint firstItem="zeO-2M-nIv" firstAttribute="leading" secondItem="1pm-JF-Jnr" secondAttribute="leading" id="EQA-fG-Heq"/>
+                            <constraint firstItem="nA3-n1-WFp" firstAttribute="top" secondItem="zeO-2M-nIv" secondAttribute="bottom" constant="6" id="N19-e7-jRI"/>
+                            <constraint firstItem="nA3-n1-WFp" firstAttribute="leading" secondItem="zeO-2M-nIv" secondAttribute="leading" id="R4k-Cc-qUO"/>
+                            <constraint firstItem="5fn-AR-s0H" firstAttribute="top" secondItem="1pm-JF-Jnr" secondAttribute="top" id="T9l-bx-qDT"/>
+                            <constraint firstItem="zeO-2M-nIv" firstAttribute="top" secondItem="5fn-AR-s0H" secondAttribute="bottom" constant="10" id="VpO-Ja-Ta1"/>
+                            <constraint firstItem="5fn-AR-s0H" firstAttribute="leading" secondItem="1pm-JF-Jnr" secondAttribute="leading" id="ebX-3O-BGy"/>
+                            <constraint firstItem="hEo-9Q-ycq" firstAttribute="leading" secondItem="nA3-n1-WFp" secondAttribute="trailing" constant="10" id="u94-ze-TqM"/>
+                        </constraints>
+                    </view>
+                </subviews>
+            </view>
+            <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
+            <constraints>
+                <constraint firstItem="1pm-JF-Jnr" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="GTD-bs-5Qr"/>
+                <constraint firstAttribute="bottom" secondItem="1pm-JF-Jnr" secondAttribute="bottom" id="Kxl-gI-mDE"/>
+                <constraint firstItem="1pm-JF-Jnr" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="f7C-wI-NDP"/>
+                <constraint firstAttribute="trailing" secondItem="1pm-JF-Jnr" secondAttribute="trailing" id="tJD-ar-Wzc"/>
+            </constraints>
+            <size key="customSize" width="142" height="243.5"/>
+            <connections>
+                <outlet property="imageViewBackdrop" destination="5fn-AR-s0H" id="prh-1D-0Cy"/>
+                <outlet property="labelContentTitle" destination="zeO-2M-nIv" id="9HI-id-rn8"/>
+                <outlet property="labelRating" destination="nA3-n1-WFp" id="nqd-OA-Tvo"/>
+                <outlet property="starRating" destination="hEo-9Q-ycq" id="tJc-p4-9Da"/>
+            </connections>
+            <point key="canvasLocation" x="204.34782608695653" y="118.86160714285714"/>
+        </collectionViewCell>
+    </objects>
+    <resources>
+        <image name="shadow&amp;bone" width="333.33334350585938" height="416.66665649414062"/>
+    </resources>
+</document>

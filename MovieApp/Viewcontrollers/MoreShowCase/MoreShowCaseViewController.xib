@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="MoreShowCaseViewController" customModule="MovieApp" customModuleProvider="target">
+            <connections>
+                <outlet property="collectionViewMoreShowCase" destination="OFd-4Q-etj" id="Aht-5O-BHL"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="OFd-4Q-etj">
+                    <rect key="frame" x="0.0" y="44" width="414" height="852"/>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="8" minimumInteritemSpacing="8" id="L1Z-xv-3ss">
+                        <size key="itemSize" width="128" height="128"/>
+                        <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                        <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                        <inset key="sectionInset" minX="6" minY="6" maxX="6" maxY="6"/>
+                    </collectionViewFlowLayout>
+                </collectionView>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
+            <color key="backgroundColor" name="color_movie_show_bg"/>
+            <constraints>
+                <constraint firstAttribute="bottom" secondItem="OFd-4Q-etj" secondAttribute="bottom" id="dUg-2Y-C1z"/>
+                <constraint firstItem="OFd-4Q-etj" firstAttribute="trailing" secondItem="fnl-2z-Ty3" secondAttribute="trailing" id="erB-XI-cII"/>
+                <constraint firstItem="OFd-4Q-etj" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="fd0-Cg-w16"/>
+                <constraint firstItem="OFd-4Q-etj" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="sOK-yQ-mh5"/>
+            </constraints>
+            <point key="canvasLocation" x="139" y="80"/>
+        </view>
+    </objects>
+    <resources>
+        <namedColor name="color_movie_show_bg">
+            <color red="0.12200000137090683" green="0.14499999582767487" blue="0.19599999487400055" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+        </namedColor>
+    </resources>
+</document>

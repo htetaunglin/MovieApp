@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="gTV-IL-0wX" customClass="ProductionCollectionViewCell" customModule="MovieApp" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="294" height="192"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="294" height="192"/>
+                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="nBD-9L-2Uh">
+                        <rect key="frame" x="0.0" y="0.0" width="294" height="192"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Production Company Name" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="5" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UjE-Dm-Mzi">
+                                <rect key="frame" x="55" y="91" width="192.5" height="18"/>
+                                <fontDescription key="fontDescription" type="system" weight="medium" pointSize="15"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <view alpha="0.0" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="uhD-RQ-LIJ">
+                                <rect key="frame" x="0.0" y="0.0" width="294" height="192"/>
+                                <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </view>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="ver-rh-KDp">
+                                <rect key="frame" x="0.0" y="0.0" width="294" height="192"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </imageView>
+                        </subviews>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="ver-rh-KDp" secondAttribute="trailing" id="7nT-75-ugq"/>
+                            <constraint firstItem="UjE-Dm-Mzi" firstAttribute="centerX" secondItem="nBD-9L-2Uh" secondAttribute="centerX" constant="4" id="CSM-lw-Ar0"/>
+                            <constraint firstAttribute="bottom" secondItem="uhD-RQ-LIJ" secondAttribute="bottom" id="SOj-to-bNf"/>
+                            <constraint firstItem="uhD-RQ-LIJ" firstAttribute="leading" secondItem="nBD-9L-2Uh" secondAttribute="leading" id="TrD-I6-57b"/>
+                            <constraint firstItem="UjE-Dm-Mzi" firstAttribute="centerY" secondItem="nBD-9L-2Uh" secondAttribute="centerY" constant="4" id="UAb-KJ-CTC"/>
+                            <constraint firstItem="ver-rh-KDp" firstAttribute="leading" secondItem="nBD-9L-2Uh" secondAttribute="leading" id="amD-0A-W1W"/>
+                            <constraint firstAttribute="trailing" secondItem="uhD-RQ-LIJ" secondAttribute="trailing" id="hIG-6W-8Rs"/>
+                            <constraint firstAttribute="bottom" secondItem="ver-rh-KDp" secondAttribute="bottom" id="xKd-bZ-Y6u"/>
+                            <constraint firstItem="ver-rh-KDp" firstAttribute="top" secondItem="nBD-9L-2Uh" secondAttribute="top" id="yey-0N-lHD"/>
+                            <constraint firstItem="uhD-RQ-LIJ" firstAttribute="top" secondItem="nBD-9L-2Uh" secondAttribute="top" id="ztk-xc-VDx"/>
+                        </constraints>
+                    </view>
+                </subviews>
+            </view>
+            <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
+            <constraints>
+                <constraint firstAttribute="trailing" secondItem="nBD-9L-2Uh" secondAttribute="trailing" id="2K3-Ct-mDz"/>
+                <constraint firstItem="nBD-9L-2Uh" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="JUm-5g-Teo"/>
+                <constraint firstItem="nBD-9L-2Uh" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="equ-52-5nZ"/>
+                <constraint firstAttribute="bottom" secondItem="nBD-9L-2Uh" secondAttribute="bottom" id="pRb-em-hmQ"/>
+            </constraints>
+            <size key="customSize" width="294" height="192"/>
+            <connections>
+                <outlet property="ivProduction" destination="ver-rh-KDp" id="fIU-dd-cFD"/>
+                <outlet property="lblProductionName" destination="UjE-Dm-Mzi" id="fov-lL-E7p"/>
+            </connections>
+            <point key="canvasLocation" x="314.49275362318843" y="161.38392857142856"/>
+        </collectionViewCell>
+    </objects>
+</document>
