@@ -43,7 +43,7 @@ class SearchViewController: UIViewController {
             switch result {
             case .success(let movieListResponse):
                 self.currentPage = movieListResponse.page
-                self.totalPage = movieListResponse.totalPages
+                self.totalPage = movieListResponse.totalPages ?? self.totalPage
                 if page == 1 {
                     self.data.removeAll()
                 }

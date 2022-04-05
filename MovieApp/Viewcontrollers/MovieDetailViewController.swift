@@ -54,7 +54,7 @@ class MovieDetailViewController: UIViewController, MovieItemDelegate{
     var filmId : Int = -1
 
     private var productionCompanies: [ProductionCompany]?
-    private var movieCasts: [MovieCast]?
+    private var movieCasts: [ActorInfoResponse]?
     private var similarMovies: [MovieResult]?
     private var movieTrailers: [Trailer]?
     
@@ -200,9 +200,9 @@ class MovieDetailViewController: UIViewController, MovieItemDelegate{
         movieDetailModel.getMovieCreditByMovieId(id) { [weak self] result in
             guard let self = self else { return }
             switch result{
-            case .success(let data):
-                self.viewActor.isHidden = data.cast?.isEmpty ?? true
-                self.movieCasts = data.cast ?? []
+            case .success(let list):
+                self.viewActor.isHidden = list.isEmpty
+                self.movieCasts = list
                 self.collectionViewActors.reloadData()
             case .failure(let error):
                 debugPrint("Movie \(id) Credit Error  > \(error.description)")
@@ -215,8 +215,8 @@ class MovieDetailViewController: UIViewController, MovieItemDelegate{
             guard let self = self else { return }
             switch result {
             case .success(let data):
-                self.viewSimilarMovie.isHidden = data.results?.isEmpty ?? true
-                self.similarMovies = data.results
+                self.viewSimilarMovie.isHidden = data.isEmpty
+                self.similarMovies = data
                 self.collectionViewSimilarMovie.reloadData()
             case .failure(let error):
                 debugPrint("Similar Movie \(id) Error  > \(error.description)")
@@ -270,7 +270,7 @@ extension MovieDetailViewController: UICollectionViewDataSource, UICollectionVie
         switch collectionView {
         case collectionViewActors:
             let cell = collectionView.dequeueCell(identifier: BestActorCollectionViewCell.identifier, indexPath: indexPath) as BestActorCollectionViewCell
-            cell.data = movieCasts?[indexPath.row].toActorInfoResponse()
+            cell.data = movieCasts?[indexPath.row]
             return cell
         case collectionViewProduction:
             let cell = collectionView.dequeueCell(identifier: ProductionCollectionViewCell.identifier, indexPath: indexPath) as ProductionCollectionViewCell

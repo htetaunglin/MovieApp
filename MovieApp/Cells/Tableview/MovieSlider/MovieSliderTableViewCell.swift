@@ -14,10 +14,10 @@ class MovieSliderTableViewCell: UITableViewCell {
     
     weak var delegate: MovieItemDelegate?=nil
     
-    var data: MovieListResponse? {
+    var data: [MovieResult]? {
         didSet{
             if let _ = data {
-                pageControl.numberOfPages = data?.results?.count ?? 0
+                pageControl.numberOfPages = data?.count ?? 0
                 collectionViewMovie.reloadData()
             }
         }
@@ -45,13 +45,13 @@ class MovieSliderTableViewCell: UITableViewCell {
 
 extension MovieSliderTableViewCell : UICollectionViewDataSource, UICollectionViewDelegateFlowLayout{
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return data?.results?.count ?? 0
+        return data?.count ?? 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueCell(identifier: MovieSliderCollectionViewCell.identifier, indexPath: indexPath) as MovieSliderCollectionViewCell
         /// -> data
-        cell.data = data?.results?[indexPath.row]
+        cell.data = data?[indexPath.row]
         return cell
     }
     
@@ -70,7 +70,7 @@ extension MovieSliderTableViewCell : UICollectionViewDataSource, UICollectionVie
     
     //OnClick
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        delegate?.onTapMovie(id: data?.results?[indexPath.row].id ?? -1)
+        delegate?.onTapMovie(id: data?[indexPath.row].id ?? -1)
     }
     
 }

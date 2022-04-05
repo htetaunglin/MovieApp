@@ -15,7 +15,7 @@ class PopularFilmTableViewCell: UITableViewCell {
     weak var delegate: MovieItemDelegate?=nil
     var isTVSeries: Bool? = nil
     
-    var data: MovieListResponse? {
+    var data: [MovieResult]? {
         didSet{
             if let _ = data {
                 collectionViewPopularMovie.reloadData()
@@ -48,12 +48,12 @@ class PopularFilmTableViewCell: UITableViewCell {
 
 extension PopularFilmTableViewCell: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout{
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return data?.results?.count ?? 0
+        return data?.count ?? 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell =  collectionView.dequeueCell(identifier: PopularFilmCollectionViewCell.identifier, indexPath: indexPath) as PopularFilmCollectionViewCell
-        cell.data = data?.results?[indexPath.row]
+        cell.data = data?[indexPath.row]
         return cell
     }
     
@@ -63,9 +63,9 @@ extension PopularFilmTableViewCell: UICollectionViewDataSource, UICollectionView
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if isTVSeries ?? false {
-            delegate?.onTapTVSeries(id: data?.results?[indexPath.row].id ?? -1)
+            delegate?.onTapTVSeries(id: data?[indexPath.row].id ?? -1)
         } else {
-            delegate?.onTapMovie(id: data?.results?[indexPath.row].id ?? -1)
+            delegate?.onTapMovie(id: data?[indexPath.row].id ?? -1)
         }
         
     }

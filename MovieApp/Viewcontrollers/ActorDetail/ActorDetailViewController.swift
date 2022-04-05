@@ -29,8 +29,8 @@ class ActorDetailViewController: UIViewController {
     
     var id: Int?
     
-    private var movies: [ActorMovieCredit] = []
-    private var tvSeries: [ActorTVCredit] = []
+    private var movies: [MovieResult] = []
+    private var tvSeries: [MovieResult] = []
     private var actorDetail: ActorDetailResponse?
     
     override func viewDidLoad() {
@@ -117,8 +117,8 @@ class ActorDetailViewController: UIViewController {
             guard let self = self else { return }
             switch response {
             case .success(let actorMovieCredits):
-                self.movieCreditView.isHidden = actorMovieCredits.cast?.isEmpty ?? true
-                self.movies = actorMovieCredits.cast ?? []
+                self.movieCreditView.isHidden = actorMovieCredits.isEmpty
+                self.movies = actorMovieCredits
                 self.collectionViewMovieCredit.reloadData()
             case .failure(let error):
                 debugPrint(error)
@@ -131,10 +131,10 @@ class ActorDetailViewController: UIViewController {
             guard let self = self else { return }
             switch response {
             case .success(let actorTVCredits):
-                self.tvCreditView.isHidden = actorTVCredits.cast?.isEmpty ?? true
-                self.tvSeries = actorTVCredits.cast ?? []
+                self.tvCreditView.isHidden = actorTVCredits.isEmpty
+                self.tvSeries = actorTVCredits
                 print(self.tvSeries.count)
-                print(actorTVCredits.cast?.count ?? 0)
+                print(actorTVCredits.count)
                 self.collectionViewTVCredit.reloadData()
             case .failure(let error):
                 debugPrint(error)
@@ -157,11 +157,11 @@ extension ActorDetailViewController : UICollectionViewDataSource, UICollectionVi
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if collectionView == collectionViewMovieCredit {
             let cell = collectionView.dequeueCell(identifier: PopularFilmCollectionViewCell.identifier, indexPath: indexPath) as PopularFilmCollectionViewCell
-            cell.data = movies[indexPath.row].toMovieResult()
+            cell.data = movies[indexPath.row]
             return cell
         } else if collectionView == collectionViewTVCredit {
             let cell = collectionView.dequeueCell(identifier: PopularFilmCollectionViewCell.identifier, indexPath: indexPath) as PopularFilmCollectionViewCell
-            cell.data = tvSeries[indexPath.row].toMovieResult()
+            cell.data = tvSeries[indexPath.row]
             return cell
         } else {
             return UICollectionViewCell()

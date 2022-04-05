@@ -48,6 +48,6 @@ struct ActorMovieCredit: Codable {
     }
     
     func toMovieResult() -> MovieResult {
-        return MovieResult(adult: adult, backdropPath: backdropPath, genreIDS: genreIDS, id: id, originalLanguage: originalLanguage, originalTitle: originalTitle, originalName: title, overview: overview, popularity: popularity, posterPath: posterPath, releaseDate: releaseDate, title: title, video: video, voteAverage: voteAverage, voteCount: voteCount)
+        return MovieResult(adult: adult, backdropPath: backdropPath, genreIDS: genreIDS, id: id, originalLanguage: originalLanguage, originalTitle: originalTitle, originalName: title, overview: overview, popularity: popularity, posterPath: posterPath, releaseDate: releaseDate, firstAirDate: releaseDate, title: title, video: false, voteAverage: voteAverage, voteCount: voteCount)
     }
 }

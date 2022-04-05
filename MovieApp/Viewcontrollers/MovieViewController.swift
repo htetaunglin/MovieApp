@@ -19,11 +19,11 @@ class MovieViewController: UIViewController {
     private let genreModel = GenreModelImpl.shared
     
     
-    private var upComingMovieList: MovieListResponse?
-    private var popularMovieList: MovieListResponse?
-    private var popularSeriesList: MovieListResponse?
+    private var upComingMovieList: [MovieResult]?
+    private var popularMovieList: [MovieResult]?
+    private var popularSeriesList: [MovieResult]?
     private var topRelatedMovieList: MovieListResponse?
-    private var movieGenreList: MovieGenreList?
+    private var movieGenreList: [MovieGenre]?
     private var popularPeople: ActorListResponse?
 
     // MARK: - LifeCycle
@@ -170,12 +170,12 @@ extension MovieViewController: UITableViewDataSource{
         case MoveType.MOVIE_GNERE.rawValue:
             let cell = tableView.dequeueCell(identifier: GenreTableViewCell.identifier, indexPath: indexPath) as GenreTableViewCell
             var list : [MovieResult] = [MovieResult]()
-            list += upComingMovieList?.results ?? []
-            list += popularMovieList?.results ?? []
-            list += popularSeriesList?.results ?? []
+            list += upComingMovieList ?? []
+            list += popularMovieList ?? []
+            list += popularSeriesList ?? []
             list += topRelatedMovieList?.results ?? []
             cell.allMovieAndSeries = list
-            let genreVos = movieGenreList?.genres.map{ $0.convertToGenreVo() }
+            let genreVos = movieGenreList?.map{ $0.convertToGenreVo() }
             genreVos?.first?.isSelected = true
             cell.genreList = genreVos
             cell.delegate = self

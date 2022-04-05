@@ -4,6 +4,7 @@
 //   let movieDetailResponse = try? newJSONDecoder().decode(MovieDetailResponse.self, from: jsonData)
 
 import Foundation
+import CoreData
 
 // MARK: - MovieDetailResponse
 struct MovieDetailResponse : Codable {
@@ -47,6 +48,7 @@ struct MovieDetailResponse : Codable {
         case voteCount = "vote_count"
     }
     
+    @discardableResult
     func toFilmDetailVo() -> FilmDetailVo {
         return FilmDetailVo(
             id: id,
@@ -77,6 +79,16 @@ struct ProductionCompany: Codable {
         case name
         case originCountry = "origin_country"
     }
+    
+    @discardableResult
+    func toProductionCompanyEntity(context: NSManagedObjectContext) -> ProductionCompanyEntity {
+        let entity = ProductionCompanyEntity(context: context)
+        entity.id = Int32(id!)
+        entity.logoPath = logoPath
+        entity.name = name
+        entity.originalCountry = originCountry
+        return entity
+    }
 }
 
 // MARK: - ProductionCountry
@@ -86,6 +98,14 @@ struct ProductionCountry: Codable {
     enum CodingKeys: String, CodingKey {
         case iso3166_1 = "iso_3166_1"
         case name
+    }
+    
+    @discardableResult
+    func toProductionCountryEntity(context: NSManagedObjectContext) -> ProductionCountryEntity {
+        let entity = ProductionCountryEntity(context: context)
+        entity.iso3166_1 = iso3166_1
+        entity.name = name
+        return entity
     }
 }
 
@@ -97,6 +117,15 @@ struct SpokenLanguage: Codable {
         case englishName = "english_name"
         case iso639_1 = "iso_639_1"
         case name
+    }
+    
+    @discardableResult
+    func toSpokenLanguageEntity(context: NSManagedObjectContext) -> SpokenLanguageEntity {
+        let entity = SpokenLanguageEntity(context: context)
+        entity.englishName = englishName
+        entity.iso639_1 = iso639_1
+        entity.name = name
+        return entity
     }
 }
 

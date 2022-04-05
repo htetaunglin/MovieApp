@@ -16,3 +16,13 @@ enum MoveType : Int {
     case MOVIE_SHOWCASE = 5
     case MOVIE_BESTACTOR = 6
 }
+
+enum MovieSeriesGroupType: String, CaseIterable {
+    case upcomingMovies = "Upcoming Movies"
+    case popularMovies = "Popular Movies"
+    case topRatedMovies = "Top Rated Movies"
+    case popularSeries = "Popular Series"
+    case upcomingSeries = "Upcoming Series"
+    case actorMovieCredits = "Actor Movie Credits"
+    case actorSeriesCredits = "Actor Series Credits"
+}

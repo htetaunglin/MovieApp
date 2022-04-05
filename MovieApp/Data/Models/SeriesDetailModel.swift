@@ -8,7 +8,7 @@
 import Foundation
 
 protocol SeriesDetailModel {
-    func getTVSeriesDetailById(_ id: Int, completion: @escaping (MDBResult<TVSeriesDetailResponse>) -> Void)
+    func getTVSeriesDetailById(_ id: Int, completion: @escaping (MDBResult<MovieDetailResponse>) -> Void)
     func getTVTrailerVideo(_ id: Int, completion: @escaping (MDBResult<TrailerResponse>) -> Void)
 }
 
@@ -16,8 +16,24 @@ class SeriesDetailModelImpl: BaseModel, SeriesDetailModel {
     static let shared = SeriesDetailModelImpl()
     private override init(){}
     
-    func getTVSeriesDetailById(_ id: Int, completion: @escaping (MDBResult<TVSeriesDetailResponse>) -> Void){
-        networkAgent.getTVSeriesDetailById(id, completion: completion)
+    private let movieRepo: MovieRepository = MovieRepositoryImpl.shared
+    
+    func getTVSeriesDetailById(_ id: Int, completion: @escaping (MDBResult<MovieDetailResponse>) -> Void){
+        networkAgent.getTVSeriesDetailById(id){ result in
+            switch(result) {
+            case .success(let response):
+                self.movieRepo.saveSeriesDetail(data: response)
+            case .failure(let error):
+                debugPrint("\(#function) \(error)")
+            }
+            self.movieRepo.getDetail(id){ item in
+                if let item = item {
+                    completion(.success(item))
+                } else {
+                    completion(.failure("Failed to get detail with id \(id)"))
+                }
+            }
+        }
     }
     
     func getTVTrailerVideo(_ id: Int, completion: @escaping (MDBResult<TrailerResponse>) -> Void) {

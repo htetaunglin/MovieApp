@@ -99,7 +99,7 @@
                                                                                         <rect key="frame" x="0.0" y="0.0" width="80" height="128"/>
                                                                                         <subviews>
                                                                                             <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="h6c-73-XPf" customClass="RatingControl" customModule="MovieApp" customModuleProvider="target">
-                                                                                                <rect key="frame" x="0.0" y="0.0" width="80" height="16"/>
+                                                                                                <rect key="frame" x="0.0" y="0.0" width="80" height="50"/>
                                                                                                 <userDefinedRuntimeAttributes>
                                                                                                     <userDefinedRuntimeAttribute type="size" keyPath="starSize">
                                                                                                         <size key="value" width="16" height="16"/>
@@ -113,7 +113,7 @@
                                                                                                 </userDefinedRuntimeAttributes>
                                                                                             </stackView>
                                                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text="--- VOTES" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="wOg-qc-cxN">
-                                                                                                <rect key="frame" x="14" y="18" width="66" height="110"/>
+                                                                                                <rect key="frame" x="14" y="52" width="66" height="76"/>
                                                                                                 <fontDescription key="fontDescription" name="GeezaPro-Bold" family="Geeza Pro" pointSize="14"/>
                                                                                                 <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                                                 <nil key="highlightedColor"/>

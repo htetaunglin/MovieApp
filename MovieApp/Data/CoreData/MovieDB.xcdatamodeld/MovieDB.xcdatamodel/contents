@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="20086" systemVersion="21E230" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="ActorEntity" representedClassName="ActorEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="adult" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="alsoKnownAs" optional="YES" attributeType="String"/>
+        <attribute name="biography" optional="YES" attributeType="String"/>
+        <attribute name="birthday" optional="YES" attributeType="String"/>
+        <attribute name="deathday" optional="YES" attributeType="String"/>
+        <attribute name="gender" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="homePage" optional="YES" attributeType="String"/>
+        <attribute name="id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="imdbID" optional="YES" attributeType="String"/>
+        <attribute name="insertedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="knownForDepartment" optional="YES" attributeType="String"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="placeOfBirth" optional="YES" attributeType="String"/>
+        <attribute name="popularity" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="profilePath" optional="YES" attributeType="String"/>
+        <relationship name="credits" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="MovieEntity" inverseName="casts" inverseEntity="MovieEntity"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="id"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+    <entity name="BelongsToCollectionEntity" representedClassName="BelongsToCollectionEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="backdropPath" optional="YES" attributeType="String"/>
+        <attribute name="id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="posterPath" optional="YES" attributeType="String"/>
+        <relationship name="movies" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="MovieEntity" inverseName="belongToCollection" inverseEntity="MovieEntity"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="id"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+    <entity name="BelongsToTypeEntity" representedClassName="BelongsToTypeEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <relationship name="movies" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="MovieEntity" inverseName="belongToType" inverseEntity="MovieEntity"/>
+    </entity>
+    <entity name="GenreEntity" representedClassName="GenreEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <relationship name="movies" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="MovieEntity"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="id"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+    <entity name="MovieEntity" representedClassName="MovieEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="adult" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="backdropPath" optional="YES" attributeType="String"/>
+        <attribute name="budget" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="firstAirDate" optional="YES" attributeType="String"/>
+        <attribute name="genreIDs" optional="YES" attributeType="String"/>
+        <attribute name="homePage" optional="YES" attributeType="String"/>
+        <attribute name="id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="imdbID" optional="YES" attributeType="String"/>
+        <attribute name="lastAirDate" optional="YES" attributeType="String"/>
+        <attribute name="originalLanguage" optional="YES" attributeType="String"/>
+        <attribute name="originalName" optional="YES" attributeType="String"/>
+        <attribute name="originalTitle" optional="YES" attributeType="String"/>
+        <attribute name="overview" optional="YES" attributeType="String"/>
+        <attribute name="popularity" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="posterPath" optional="YES" attributeType="String"/>
+        <attribute name="releaseDate" optional="YES" attributeType="String"/>
+        <attribute name="revenu" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="runTime" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="status" optional="YES" attributeType="String"/>
+        <attribute name="tagline" optional="YES" attributeType="String"/>
+        <attribute name="title" optional="YES" attributeType="String"/>
+        <attribute name="video" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="voteAverage" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="voteCount" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="belongToCollection" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="BelongsToCollectionEntity" inverseName="movies" inverseEntity="BelongsToCollectionEntity"/>
+        <relationship name="belongToType" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="BelongsToTypeEntity" inverseName="movies" inverseEntity="BelongsToTypeEntity"/>
+        <relationship name="casts" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ActorEntity" inverseName="credits" inverseEntity="ActorEntity"/>
+        <relationship name="genres" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="GenreEntity"/>
+        <relationship name="productionCompanies" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ProductionCompanyEntity" inverseName="movies" inverseEntity="ProductionCompanyEntity"/>
+        <relationship name="productionCountries" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ProductionCountryEntity" inverseName="movies" inverseEntity="ProductionCountryEntity"/>
+        <relationship name="similarMovies" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="MovieEntity" inverseName="similarMovies" inverseEntity="MovieEntity"/>
+        <relationship name="spokenLanguages" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="SpokenLanguageEntity" inverseName="movies" inverseEntity="SpokenLanguageEntity"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="id"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+    <entity name="ProductionCompanyEntity" representedClassName="ProductionCompanyEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="logoPath" optional="YES" attributeType="String"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="originalCountry" optional="YES" attributeType="String"/>
+        <relationship name="movies" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="MovieEntity" inverseName="productionCompanies" inverseEntity="MovieEntity"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="id"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+    <entity name="ProductionCountryEntity" representedClassName="ProductionCountryEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="iso3166_1" optional="YES" attributeType="String"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <relationship name="movies" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="MovieEntity" inverseName="productionCountries" inverseEntity="MovieEntity"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="name"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+    <entity name="SpokenLanguageEntity" representedClassName="SpokenLanguageEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="englishName" optional="YES" attributeType="String"/>
+        <attribute name="iso639_1" optional="YES" attributeType="String"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <relationship name="movies" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="MovieEntity" inverseName="spokenLanguages" inverseEntity="MovieEntity"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="name"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+    <elements>
+        <element name="ActorEntity" positionX="-1447.87109375" positionY="-40.79296875" width="128" height="283"/>
+        <element name="BelongsToCollectionEntity" positionX="-1927.83984375" positionY="74.9921875" width="128" height="118"/>
+        <element name="BelongsToTypeEntity" positionX="-2022.9140625" positionY="281.59765625" width="128" height="73"/>
+        <element name="GenreEntity" positionX="-1953.75" positionY="481.2421875" width="128" height="88"/>
+        <element name="MovieEntity" positionX="-1665.453125" positionY="-24.7578125" width="128" height="523"/>
+        <element name="ProductionCompanyEntity" positionX="-1392.8515625" positionY="251.71875" width="128" height="118"/>
+        <element name="ProductionCountryEntity" positionX="-1683.45703125" positionY="582.68359375" width="128" height="88"/>
+        <element name="SpokenLanguageEntity" positionX="-1410.65625" positionY="444.30859375" width="128" height="103"/>
+    </elements>
+</model>

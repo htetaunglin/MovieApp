@@ -43,7 +43,7 @@ class MoreShowCaseViewController: UIViewController {
             switch result {
             case .success(let movieListResponse):
                 self.currentPage = movieListResponse.page
-                self.totalPage = movieListResponse.totalPages
+                self.totalPage = movieListResponse.totalPages ?? self.totalPage
                 self.data.append(contentsOf: movieListResponse.results ?? [])
                 self.collectionViewMoreShowCase.reloadData()
             case .failure(let error):

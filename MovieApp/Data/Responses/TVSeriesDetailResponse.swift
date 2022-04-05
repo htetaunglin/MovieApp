@@ -4,6 +4,7 @@
 //   let tVSeriesDetailResponse = try? newJSONDecoder().decode(TVSeriesDetailResponse.self, from: jsonData)
 
 import Foundation
+import CoreData
 
 // MARK: - TVSeriesDetailResponse
 struct TVSeriesDetailResponse: Codable {
@@ -65,6 +66,7 @@ struct TVSeriesDetailResponse: Codable {
         case voteCount = "vote_count"
     }
     
+    @discardableResult
     func toFilmDetailVo() -> FilmDetailVo {
            return FilmDetailVo(
                id: id,
@@ -81,7 +83,39 @@ struct TVSeriesDetailResponse: Codable {
                voteAverage: voteAverage,
                genres: genres,
                productions: productionCompanies)
-       }
+    }
+    
+    @discardableResult
+    func toMovieEntity(context: NSManagedObjectContext) -> MovieEntity {
+        let entity = MovieEntity(context: context)
+        entity.id = Int32(id ?? 0)
+        entity.adult = adult ?? false
+        entity.backdropPath = backdropPath
+        entity.genreIDs = genres?.map{ String($0.id) }.joined(separator: ",")
+        entity.originalLanguage = originalLanguage
+        entity.originalName = originalName
+        entity.originalTitle = originalName
+        entity.overview = overview
+        entity.popularity = popularity ?? 0
+        entity.posterPath = posterPath
+        entity.releaseDate = firstAirDate ?? ""
+        entity.title = name
+        entity.video = true
+        entity.runTime = Int64(episodeRunTime?.reduce(0){$0+$1} ?? 0)
+        entity.voteAverage = voteAverage ?? 0
+        entity.voteCount = Int64(voteCount ?? 0)
+        // Relationship
+        productionCompanies?.forEach{
+            entity.addToProductionCompanies($0.toProductionCompanyEntity(context: context))
+        }
+        productionCountries?.forEach{
+            entity.addToProductionCountries($0.toProductionCountryEntity(context: context))
+        }
+        spokenLanguages?.forEach{
+            entity.addToSpokenLanguages($0.toSpokenLanguageEntity(context: context))
+        }
+        return entity
+    }
 }
 
 // MARK: - CreatedBy
