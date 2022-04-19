@@ -17,8 +17,7 @@ class ActorDetailModelImpl: BaseModel, ActorDetailModel {
     static let shared = ActorDetailModelImpl()
     private override init(){}
     
-    private let actorRepo: ActorRepository = ActorRepositoryImpl.shared
-    private let movieRepo: MovieRepository = MovieRepositoryImpl.shared
+    private let actorRepo: ActorRepository = ActorRepositoryRealmImpl.shared
     
     func getActorDetail(_ id: Int, completion: @escaping (MDBResult<ActorDetailResponse>) -> Void) {
         networkAgent.getActorDetail(id){ result in

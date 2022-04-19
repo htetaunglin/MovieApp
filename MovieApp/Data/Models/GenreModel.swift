@@ -13,7 +13,7 @@ protocol GenreModel {
 
 class GenreModelImpl: BaseModel, GenreModel {
     static let shared = GenreModelImpl()
-    let genreRespository: GenreRepository = GenreRepositoryImpl.shared
+    let genreRespository: GenreRepository = GenreRepositoryRealmImpl.shared
     private override init(){}
     
     func getGenreList(completion: @escaping (MDBResult<[MovieGenre]>) -> Void){

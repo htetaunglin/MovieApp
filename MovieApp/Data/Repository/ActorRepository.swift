@@ -19,6 +19,92 @@ protocol ActorRepository {
     func saveMoviesByActor(_ id: Int, list: [MovieResult])
 }
 
+class ActorRepositoryRealmImpl: BaseRepository, ActorRepository {
+    
+    static let shared: ActorRepository = ActorRepositoryRealmImpl()
+    private let pageSize: Int = 20
+    
+    private override init() {
+        super.init()
+    }
+    
+    func getList(page: Int, type: ActorGroupType, completion: @escaping ([ActorInfoResponse]) -> Void) {
+        // Pagination
+        let actorObjs = realDB.objects(ActorObject.self)
+            .sorted(byKeyPath: "popularity", ascending: false)
+            .suffix(from: (page * pageSize) - pageSize)
+            .prefix(pageSize)
+        completion(actorObjs.map{ $0.toActorInfoResponse() })
+    }
+    
+    func save(list: [ActorInfoResponse]) {
+        do {
+            try realDB.write{
+                realDB.add(list.map{ $0.toActorObject() }, update: .modified)
+            }
+        } catch {
+            debugPrint(error.localizedDescription)
+        }
+    }
+    
+    func saveDetails(data: ActorDetailResponse) {
+        do {
+            try realDB.write{
+                realDB.add(data.toActorObject(), update: .modified)
+            }
+        } catch {
+            debugPrint(error.localizedDescription)
+        }
+    }
+    
+    func getDetails(id: Int, completion: @escaping (ActorDetailResponse?) -> Void) {
+        let actor = realDB.object(ofType: ActorObject.self, forPrimaryKey: id)
+        completion(actor?.toActorDetailResponse())
+    }
+    
+    func getTotalPageActorList(completion: @escaping (Int) -> Void) {
+        let actorObjs = realDB.objects(ActorObject.self)
+        completion(actorObjs.count)
+    }
+    
+    func getMoviesByActor(_ id: Int, isSeries: Bool, completion: @escaping ([MovieResult]) -> Void) {
+        //
+        if let actorObj = realDB.object(ofType: ActorObject.self, forPrimaryKey: id) {
+            completion(actorObj.movies.filter{ $0.video == isSeries }.map{ $0.toMovieResult() })
+        }
+    }
+    
+    func saveMoviesByActor(_ id: Int, list: [MovieResult]) {
+        let actorObj = realDB.object(ofType: ActorObject.self, forPrimaryKey: id)
+        do {
+            try realDB.write{
+                let movieObj = list.map{ movie -> MovieObject in
+                    if let movie = realDB.object(ofType: MovieObject.self, forPrimaryKey: movie.id) {
+                        movie.actors.append(actorObj!)
+                        return movie
+                    } else {
+                        let genres = movie.genreIDS?.map{ genreId -> GenreObject in
+                            var genreObj = realDB.object(ofType: GenreObject.self, forPrimaryKey: genreId)
+                            if genreObj == nil {
+                                genreObj = GenreObject()
+                                genreObj?.id = 0
+                                genreObj?.name = ""
+                            }
+                            return genreObj!
+                        }
+                        let movieObject = movie.toMovieObject(genres: genres ?? [])
+                        movieObject.actors.append(actorObj!)
+                        return movieObject
+                    }
+                }
+                realDB.add(movieObj, update: .modified)
+            }
+        } catch {
+            debugPrint(error.localizedDescription)
+        }
+    }
+}
+
 class ActorRepositoryImpl: BaseRepository, ActorRepository {
     
     static let shared: ActorRepository = ActorRepositoryImpl()
@@ -123,3 +209,4 @@ class ActorRepositoryImpl: BaseRepository, ActorRepository {
         return self.contentTypeRepo.getBelongToTypeEntity(type: .actorMovieCredits)
     }
 }
+

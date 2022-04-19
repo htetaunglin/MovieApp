@@ -7,12 +7,17 @@
 
 import Foundation
 import CoreData
+import RealmSwift
 
 class BaseRepository: NSObject {
+    
     override init() {
         super.init()
+        debugPrint("Default Realm is at \(realDB.configuration.fileURL?.absoluteString ?? "undefined")")
     }
     let coreData = CoreDataStack.shared
+    let realDB = try! Realm()
+    
     
     //https://stackoverflow.com/questions/2262704/iphone-core-data-production-error-handling
     func handleError(_ anError: Error?) -> String{

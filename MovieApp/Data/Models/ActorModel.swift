@@ -18,11 +18,12 @@ class ActorModelImpl: BaseModel, ActorModel {
     static let shared = ActorModelImpl()
     private override init(){}
     
-    let actorRepo: ActorRepository = ActorRepositoryImpl.shared
+    let actorRepo: ActorRepository = ActorRepositoryRealmImpl.shared
     
     func getPopularPeople(page: Int = 1, completion: @escaping (MDBResult<ActorListResponse>) -> Void) {
         var netWorkResult = [ActorInfoResponse]()
         networkAgent.getPopularPeople(page: page){ result in
+            
             switch result {
             case .success(let response):
                 netWorkResult = response.results ?? []

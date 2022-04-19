@@ -116,6 +116,34 @@ struct TVSeriesDetailResponse: Codable {
         }
         return entity
     }
+    
+    func toMovieObject() -> MovieObject {
+        let object = MovieObject()
+        object.id = id
+        object.adult = adult
+        object.backdropPath = backdropPath
+        object.genreIDS = genres?.map{ "\($0.id)" }.joined(separator: ",")
+        object.genres.append(objectsIn: genres?.map{ $0.toGenreObject() } ?? [])
+        object.originalLanguage = originalLanguage ?? ""
+        object.originalTitle = name
+        object.originalName = name
+        object.overview = overview
+        object.popularity = popularity ?? 0
+        object.posterPath = posterPath ?? ""
+        object.releaseDate = firstAirDate
+        object.firstAirDate = firstAirDate
+        object.title = name
+        object.video = true
+        object.voteAverage = voteAverage
+        object.voteCount = voteCount
+        object.productionCompanies.append(objectsIn: productionCompanies?.map{ $0.toProductionCompanyObject() } ?? [])
+        object.productionCountries.append(objectsIn: productionCountries?.map{ $0.toProductionCountryObject() } ?? [])
+        object.runtime = episodeRunTime?.reduce(0){$0+$1} ?? 0
+        object.spokenLanguages.append(objectsIn: spokenLanguages?.map{ $0.toSpokenLanguageObject() } ?? [])
+        object.status = status
+        object.tagline = tagline
+        return object
+    }
 }
 
 // MARK: - CreatedBy

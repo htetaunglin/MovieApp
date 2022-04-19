@@ -39,4 +39,16 @@ struct MovieCast: Codable {
     func toActorInfoResponse() -> ActorInfoResponse{
         return ActorInfoResponse(adult: adult, gendre: gender, id: id, knownFor: nil, knownForDepartment: knownForDepartment, name: name, popularity: popularity, profilePath: profilePath)
     }
+    
+    func toActorObject() -> ActorObject {
+        let object = ActorObject()
+        object.adult = adult ?? false
+        object.gender = gender
+        object.id = id ?? 0
+        object.knownForDepartment = knownForDepartment
+        object.name = name
+        object.popularity = popularity ?? 0.0
+        object.profilePath = profilePath
+        return object
+    }
 }

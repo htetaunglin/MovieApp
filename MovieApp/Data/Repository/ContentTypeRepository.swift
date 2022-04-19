@@ -14,6 +14,7 @@ protocol ContentTypeRepository {
     func getBelongToTypeEntity(type: MovieSeriesGroupType) -> BelongsToTypeEntity
 }
 
+
 class ContentTypeRepositoryImpl: BaseRepository, ContentTypeRepository {
    
     static let shared : ContentTypeRepository = ContentTypeRepositoryImpl()

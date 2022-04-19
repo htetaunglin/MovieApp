@@ -19,7 +19,7 @@ class MovieDetailModelImpl: BaseModel, MovieDetailModel {
     static let shared = MovieDetailModelImpl()
     private override init(){}
     
-    private let movieRepo: MovieRepository = MovieRepositoryImpl.shared
+    private let movieRepo: MovieRepository = MovieRepositoryRealmImpl.shared
     
     func getMovieTrailerVideo(_ id: Int, completion: @escaping (MDBResult<TrailerResponse>) -> Void) {
         networkAgent.getMovieTrailerVideo(id, completion: completion)
@@ -39,7 +39,6 @@ class MovieDetailModelImpl: BaseModel, MovieDetailModel {
         }
     }
     
-    // to Present in 3/4/2022
     func getMovieCreditByMovieId(_ id: Int, completion: @escaping (MDBResult<[ActorInfoResponse]>) -> Void) {
         networkAgent.getMovieCreditByMovieId(id){ result in
             switch result {

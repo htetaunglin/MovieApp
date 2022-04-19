@@ -15,8 +15,7 @@ class SeriesModelImpl: BaseModel, SeriesModel {
     static let shared = SeriesModelImpl()
     private override init(){}
     
-    private let movieRepo: MovieRepository = MovieRepositoryImpl.shared
-    private let contentTypeRepo: ContentTypeRepository = ContentTypeRepositoryImpl.shared
+    private let movieRepo: MovieRepository = MovieRepositoryRealmImpl.shared
 
     func getPopularSeriesList(completion: @escaping (MDBResult<[MovieResult]>) -> Void) {
         let contentType : MovieSeriesGroupType = .popularSeries
@@ -27,7 +26,7 @@ class SeriesModelImpl: BaseModel, SeriesModel {
             case .failure(let error):
                 debugPrint("\(#function) \(error)")
             }
-            self.contentTypeRepo.getMoviesOrSeries(type: contentType){
+            self.movieRepo.getMoviesByGroupType(type: contentType){
                 completion(.success($0))
             }
         }

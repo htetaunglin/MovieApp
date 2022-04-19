@@ -28,4 +28,22 @@ struct ActorDetailResponse: Codable {
         case popularity
         case profilePath = "profile_path"
     }
+    
+    func toActorObject() -> ActorObject {
+        let object = ActorObject()
+        object.adult = adult ?? false
+        object.alsoKnownAs = alsoKnownAs?.joined(separator: ",")
+        object.biography = biography
+        object.birthday = birthday
+        object.deathday = deathday
+        object.gender = gender
+        object.id = id ?? 0
+        object.imdbID = imdbID
+        object.knownForDepartment = knownForDepartment
+        object.name = name
+        object.placeOfBirth = placeOfBirth
+        object.popularity = popularity ?? 0.0
+        object.profilePath = profilePath
+        return object
+    }
 }

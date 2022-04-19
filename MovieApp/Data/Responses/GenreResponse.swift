@@ -21,4 +21,11 @@ struct MovieGenre : Codable {
         let vo = GenreVo(id: id, name: name, isSelected: false)
         return vo
     }
+    
+    func toGenreObject() -> GenreObject {
+        let object = GenreObject()
+        object.id = id
+        object.name = name
+        return object
+    }
 }

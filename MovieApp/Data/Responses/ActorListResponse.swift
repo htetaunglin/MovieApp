@@ -37,4 +37,15 @@ public struct ActorInfoResponse : Codable {
         case profilePath = "profile_path"
     }
     
+    func toActorObject() -> ActorObject {
+        let object = ActorObject()
+        object.adult = adult ?? false
+        object.gender = gendre
+        object.id = id ?? 0
+        object.knownForDepartment = knownForDepartment
+        object.name = name
+        object.popularity = popularity ?? 0.0
+        object.profilePath = profilePath
+        return object
+    }
 }

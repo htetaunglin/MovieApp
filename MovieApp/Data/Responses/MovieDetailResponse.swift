@@ -66,6 +66,38 @@ struct MovieDetailResponse : Codable {
             genres: genres,
             productions: productionCompanies)
     }
+    
+    func toMovieObject() -> MovieObject {
+        let object = MovieObject()
+        object.id = id
+        object.adult = adult
+        object.backdropPath = backdropPath
+        object.genreIDS = genres?.map{ "\($0.id)" }.joined(separator: ",")
+        object.genres.append(objectsIn: genres?.map{ $0.toGenreObject() } ?? [])
+        object.originalLanguage = originalLanguage ?? ""
+        object.originalTitle = originalTitle
+        object.originalName = originalTitle
+        object.overview = overview
+        object.popularity = popularity ?? 0
+        object.posterPath = posterPath ?? ""
+        object.releaseDate = releaseDate
+        object.title = title
+        object.video = video ?? false
+        object.voteAverage = voteAverage
+        object.voteCount = voteCount
+        object.video = false
+        object.budget = budget
+        object.productionCompanies.append(objectsIn: productionCompanies?.map{ $0.toProductionCompanyObject() } ?? [])
+        object.productionCountries.append(objectsIn: productionCountries?.map{ $0.toProductionCountryObject() } ?? [])
+        object.revenue = revenue
+        object.runtime = runtime
+        object.spokenLanguages.append(objectsIn: spokenLanguages?.map{ $0.toSpokenLanguageObject() } ?? [])
+        object.status = status
+        object.tagline = tagline
+        object.voteAverage = voteAverage
+        object.voteCount = voteCount
+        return object
+    }
 }
 
 // MARK: - ProductionCompany
@@ -89,6 +121,16 @@ struct ProductionCompany: Codable {
         entity.originalCountry = originCountry
         return entity
     }
+    
+    @discardableResult
+    func toProductionCompanyObject() -> ProductionCompanyObject {
+        let object = ProductionCompanyObject()
+        object.id = id ?? 0
+        object.logoPath = logoPath ?? ""
+        object.name = name ?? ""
+        object.originalCountry = originCountry ?? ""
+        return object;
+    }
 }
 
 // MARK: - ProductionCountry
@@ -106,6 +148,14 @@ struct ProductionCountry: Codable {
         entity.iso3166_1 = iso3166_1
         entity.name = name
         return entity
+    }
+    
+    @discardableResult
+    func toProductionCountryObject() -> ProductionCountryObject {
+        let object = ProductionCountryObject()
+        object.iso3166_1 = iso3166_1
+        object.name = name ?? ""
+        return object;
     }
 }
 
@@ -126,6 +176,15 @@ struct SpokenLanguage: Codable {
         entity.iso639_1 = iso639_1
         entity.name = name
         return entity
+    }
+    
+    @discardableResult
+    func toSpokenLanguageObject() -> SpokenLanguageObject {
+        let object = SpokenLanguageObject()
+        object.englishName = englishName ?? ""
+        object.iso639_1 = iso639_1 ?? ""
+        object.name = name ?? ""
+        return object
     }
 }
 

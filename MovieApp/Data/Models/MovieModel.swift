@@ -18,8 +18,7 @@ class MovieModelImpl: BaseModel, MovieModel {
     static let shared = MovieModelImpl()
     private override init(){}
     
-    private let movieRepo: MovieRepository = MovieRepositoryImpl.shared
-    private let contentTypeRepo: ContentTypeRepository = ContentTypeRepositoryImpl.shared
+    private let movieRepo: MovieRepository = MovieRepositoryRealmImpl.shared
 
     /// Showcase
     func getTopRelatedMoveiList(page: Int = 1, completion: @escaping (MDBResult<MovieListResponse>) -> Void){
@@ -33,8 +32,7 @@ class MovieModelImpl: BaseModel, MovieModel {
             case .failure(let error):
                 debugPrint("\(#function) \(error)")
             }
-            self.contentTypeRepo.getMoviesOrSeries(type: contentType){ res in
-                // TODO Paging with CoreData (example: ActorModel)
+            self.movieRepo.getMoviesByGroupTypeByPage(page: page, type: contentType){ res in
                 if let response = movieListResponse {
                     // Change [MovieResult] to MovieListResponse
                     let newMovieListResponse = MovieListResponse(dates: response.dates , page: page, results: res, totalPages: response.totalPages, totalResults: response.totalResults)
@@ -56,7 +54,7 @@ class MovieModelImpl: BaseModel, MovieModel {
             case .failure(let error):
                 debugPrint("\(#function) \(error)")
             }
-            self.contentTypeRepo.getMoviesOrSeries(type: contentType){
+            self.movieRepo.getMoviesByGroupType(type: contentType){
                 completion(.success($0))
             }
         }
@@ -71,7 +69,7 @@ class MovieModelImpl: BaseModel, MovieModel {
             case .failure(let error):
                 debugPrint("\(#function) \(error)")
             }
-            self.contentTypeRepo.getMoviesOrSeries(type: contentType){
+            self.movieRepo.getMoviesByGroupType(type: contentType){
                 completion(.success($0))
             }
         }

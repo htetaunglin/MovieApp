@@ -23,6 +23,7 @@ enum MovieSeriesGroupType: String, CaseIterable {
     case topRatedMovies = "Top Rated Movies"
     case popularSeries = "Popular Series"
     case upcomingSeries = "Upcoming Series"
+    case similarMovies = "Similar Movies"
     case actorMovieCredits = "Actor Movie Credits"
     case actorSeriesCredits = "Actor Series Credits"
 }

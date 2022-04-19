@@ -16,7 +16,7 @@ class SeriesDetailModelImpl: BaseModel, SeriesDetailModel {
     static let shared = SeriesDetailModelImpl()
     private override init(){}
     
-    private let movieRepo: MovieRepository = MovieRepositoryImpl.shared
+    private let movieRepo: MovieRepository = MovieRepositoryRealmImpl.shared
     
     func getTVSeriesDetailById(_ id: Int, completion: @escaping (MDBResult<MovieDetailResponse>) -> Void){
         networkAgent.getTVSeriesDetailById(id){ result in

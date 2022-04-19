@@ -5,6 +5,7 @@
 
 import Foundation
 import CoreData
+import RealmSwift
 
 // MARK: - UpcomingMovieList
 struct MovieListResponse: Codable {
@@ -77,4 +78,25 @@ struct MovieResult: Codable, Hashable {
         return entity
     }
     
+    func toMovieObject(genres: [GenreObject]) -> MovieObject {
+        let object = MovieObject()
+        object.id = id
+        object.adult = adult
+        object.backdropPath = backdropPath
+        object.genreIDS = genreIDS?.map{ String($0) }.joined(separator: ",")
+        object.genres.append(objectsIn: genres)
+        object.originalLanguage = originalLanguage ?? ""
+        object.originalName = originalName
+        object.originalTitle = originalTitle
+        object.overview = overview
+        object.popularity = popularity ?? 0
+        object.posterPath = posterPath ?? ""
+        object.releaseDate = releaseDate ?? firstAirDate ?? ""
+        object.firstAirDate = firstAirDate ?? ""
+        object.title = title
+        object.video = video ?? true
+        object.voteAverage = voteAverage
+        object.voteCount = voteCount
+        return object
+    }
 }
