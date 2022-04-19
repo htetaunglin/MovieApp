@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "6273C43DC7FF94E93DBFF580DB584296"
-               BuildableName = "YouTubePlayer.framework"
+               BuildableName = "YouTubePlayer"
                BlueprintName = "YouTubePlayer"
                ReferencedContainer = "container:Pods.xcodeproj">
             </BuildableReference>
