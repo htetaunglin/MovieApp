@@ -11,5 +11,8 @@ target 'MovieApp' do
   pod 'SDWebImage', '~> 5.0'
   pod 'YouTubePlayer'
   pod 'RealmSwift'
+  pod 'RxSwift', '6.5.0'
+  pod 'RxAlamofire'
+  pod "RxRealm"
 
 end

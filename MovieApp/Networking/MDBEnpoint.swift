@@ -8,7 +8,9 @@
 import Foundation
 import Alamofire
 
-enum MDBEndpoint: URLConvertible {
+enum MDBEndpoint: URLConvertible, URLRequestConvertible {
+    
+    
     
     case movieGenre
     case upcomingMovieList
@@ -29,6 +31,10 @@ enum MDBEndpoint: URLConvertible {
 
     func asURL() throws -> URL {
         return url
+    }
+    
+    func asURLRequest() throws -> URLRequest {
+        return try! URLRequest(url: self.url, method: .get)
     }
     
     var url: URL {
