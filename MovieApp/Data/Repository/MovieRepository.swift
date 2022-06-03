@@ -28,27 +28,27 @@ class MovieRepositoryRealmImpl: BaseRepository, MovieRepository {
     
     let genreRepository = GenreRepositoryRealmImpl.shared
     
-    var notificationToken: NotificationToken?
+//    var notificationToken: NotificationToken?
     
     private override init() {
         super.init()
-        let datasource = realDB.objects(BelongToTypeObject.self)
-        notificationToken = datasource.observe{ (changes) in
-            switch changes {
-            case .initial(let objects):
-                print("initial \(objects.count)")
-                break
-            case .update(let objects, deletions: let deletions, insertions: let insertions, modifications: let modifications):
-                print("update \(objects.count)")
-                print("insertions \(insertions.map{ "\($0)" }.joined(separator: ","))")
-                print("deletions \(deletions.map{ "\($0)" }.joined(separator: ","))")
-                print("modifications \(modifications.map{ "\($0)" }.joined(separator: ","))")
-                break
-            case .error(let error):
-                print("error \(error.localizedDescription)")
-                break
-            }
-        }
+//        let datasource = realDB.objects(BelongToTypeObject.self)
+//        notificationToken = datasource.observe{ (changes) in
+//            switch changes {
+//            case .initial(let objects):
+//                print("initial \(objects.count)")
+//                break
+//            case .update(let objects, deletions: let deletions, insertions: let insertions, modifications: let modifications):
+//                print("update \(objects.count)")
+//                print("insertions \(insertions.map{ "\($0)" }.joined(separator: ","))")
+//                print("deletions \(deletions.map{ "\($0)" }.joined(separator: ","))")
+//                print("modifications \(modifications.map{ "\($0)" }.joined(separator: ","))")
+//                break
+//            case .error(let error):
+//                print("error \(error.localizedDescription)")
+//                break
+//            }
+//        }
     }
     
     func getDetail(_ id: Int, completion: @escaping (MovieDetailResponse?) -> Void) {

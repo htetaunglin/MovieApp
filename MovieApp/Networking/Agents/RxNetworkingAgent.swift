@@ -14,31 +14,19 @@ enum MDBError: Error {
     case withMessage(String)
 }
 
-class RxNetworkingAgent : BaseNetworkingAgent {
+class RxNetworkingAgent : RxNetworkingAgentProtocol {
     static let shared = RxNetworkingAgent()
-    
-    private override init(){
-        
-    }
+    private init(){}
     
     func getPopularMovieList() -> Observable<MovieListResponse> {
         return RxAlamofire
             .requestDecodable(MDBEndpoint.popularMovieList)
-            .flatMap{
-                item -> Observable in Observable.just(item.1)
-            }
-//        return Observable.create{ (observer) -> Disposable in
-//            AF.request(MDBEndpoint.popularMovieList)
-//                .responseDecodable(of: MovieListResponse.self) {response in
-//                    switch response.result {
-//                    case .success(let data):
-//                        observer.onNext(data)
-//                        observer.onCompleted()
-//                    case .failure(let error):
-//                        observer.onError(error)
-//                    }
-//                }
-//            return Disposables.create()
-//        }
+            .flatMap{ Observable.just($0.1) }
+    }
+    
+    func searchMovie(_ text: String, page: Int) -> Observable<MovieListResponse> {
+        return RxAlamofire
+            .requestDecodable(MDBEndpoint.searchMovie(page, text))
+            .flatMap{ Observable.just($0.1) }
     }
 }

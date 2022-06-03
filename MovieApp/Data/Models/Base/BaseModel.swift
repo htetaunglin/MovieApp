@@ -9,4 +9,5 @@ import Foundation
 
 class BaseModel: NSObject {
     let networkAgent : NetworkingAgentProtocol = MovieDBNetworkAgent.shared
+    let rxNetworkAgent : RxNetworkingAgentProtocol = RxNetworkingAgent.shared
 }

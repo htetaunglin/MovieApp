@@ -29,7 +29,7 @@ class RxMovieModelImpl: BaseModel, RxMovieModel {
     
     func getPopularMovieList() -> Observable<[MovieResult]> {
         let contentType : MovieSeriesGroupType = .popularMovies
-        let observableRemoteMovieList = RxNetworkingAgent.shared.getPopularMovieList()
+        let observableRemoteMovieList = rxNetworkAgent.getPopularMovieList()
         observableRemoteMovieList.subscribe { response in
             self.movieRepo.saveList(type: contentType, data: response.results)
         }.disposed(by: disposeBag)
