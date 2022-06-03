@@ -83,13 +83,16 @@ class ActorRepositoryRealmImpl: BaseRepository, ActorRepository {
                         movie.actors.append(actorObj!)
                         return movie
                     } else {
-                        var genres = [GenreObject]()
-                        movie.genreIDS?.forEach{ genreId in
-                            if let genreObj = realDB.object(ofType: GenreObject.self, forPrimaryKey: genreId){
-                                genres.append(genreObj)
+                        let genres = movie.genreIDS?.map{ genreId -> GenreObject in
+                            var genreObj = realDB.object(ofType: GenreObject.self, forPrimaryKey: genreId)
+                            if genreObj == nil {
+                                genreObj = GenreObject()
+                                genreObj?.id = 0
+                                genreObj?.name = ""
                             }
+                            return genreObj!
                         }
-                        let movieObject = movie.toMovieObject(genres: genres)
+                        let movieObject = movie.toMovieObject(genres: genres ?? [])
                         movieObject.actors.append(actorObj!)
                         return movieObject
                     }

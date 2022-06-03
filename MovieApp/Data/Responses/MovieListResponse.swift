@@ -19,10 +19,6 @@ struct MovieListResponse: Codable {
         case totalPages = "total_pages"
         case totalResults = "total_results"
     }
-    
-    static func empty() -> MovieListResponse {
-        return MovieListResponse(dates: nil, page: 1, results: nil, totalPages: nil, totalResults: nil)
-    }
 }
 
 // MARK: - Dates

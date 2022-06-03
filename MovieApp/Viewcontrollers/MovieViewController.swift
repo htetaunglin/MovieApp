@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import RxSwift
 
 class MovieViewController: UIViewController {
     
@@ -18,9 +17,6 @@ class MovieViewController: UIViewController {
     private let seriesModel = SeriesModelImpl.shared
     private let actorModel = ActorModelImpl.shared
     private let genreModel = GenreModelImpl.shared
-    
-    // MARK: - Rx Property
-    private let movieRxModel = RxMovieModelImpl.shared
     
     
     private var upComingMovieList: [MovieResult]?
@@ -72,25 +68,17 @@ class MovieViewController: UIViewController {
         }
     }
     
-    let disposeBag = DisposeBag()
     func fetchPopularMovieList(){
-        movieRxModel.getPopularMovieList().subscribe { data in
-            self.popularMovieList = data
-            self.tableViewMovie.reloadSections(IndexSet(integer: MoveType.MOVIE_POPULAR.rawValue), with: .automatic)
-        } onError: { error in
-            debugPrint("Pouplar Movie Error  > \(error)")
-        }.disposed(by: disposeBag)
-
-//        movieModel.getPopularMovieList { [weak self] result in
-//            guard let self = self else { return }
-//            switch result {
-//            case .success(let data):
-//                self.popularMovieList = data
-//                self.tableViewMovie.reloadSections(IndexSet(integer: MoveType.MOVIE_POPULAR.rawValue), with: .automatic)
-//            case .failure(let error):
-//                debugPrint("Pouplar Movie Error  > \(error.description)")
-//            }
-//        }
+        movieModel.getPopularMovieList { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let data):
+                self.popularMovieList = data
+                self.tableViewMovie.reloadSections(IndexSet(integer: MoveType.MOVIE_POPULAR.rawValue), with: .automatic)
+            case .failure(let error):
+                debugPrint("Pouplar Movie Error  > \(error.description)")
+            }
+        }
     }
     
     func fetchPopularSeriesList(){

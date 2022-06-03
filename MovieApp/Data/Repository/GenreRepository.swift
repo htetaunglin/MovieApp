@@ -31,8 +31,9 @@ class GenreRepositoryRealmImpl: BaseRepository, GenreRepository {
         do{
             try realDB.write{
                 data.genres.forEach{
-                    if let genre = realDB.object(ofType: GenreObject.self, forPrimaryKey: $0.id){
-                        realDB.add(genre, update: .modified)
+                    let genre = realDB.object(ofType: GenreObject.self, forPrimaryKey: $0.id)
+                    if genre != nil {
+                        realDB.add(genre!, update: .modified)
                     } else {
                         realDB.add($0.toGenreObject(), update: .modified)
                     }

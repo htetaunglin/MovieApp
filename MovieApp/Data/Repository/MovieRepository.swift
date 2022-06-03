@@ -7,7 +7,6 @@
 
 import Foundation
 import CoreData
-import RealmSwift
 
 protocol MovieRepository {
     func getDetail(_ id: Int, completion: @escaping (MovieDetailResponse?) -> Void)
@@ -28,27 +27,8 @@ class MovieRepositoryRealmImpl: BaseRepository, MovieRepository {
     
     let genreRepository = GenreRepositoryRealmImpl.shared
     
-    var notificationToken: NotificationToken?
-    
     private override init() {
         super.init()
-        let datasource = realDB.objects(BelongToTypeObject.self)
-        notificationToken = datasource.observe{ (changes) in
-            switch changes {
-            case .initial(let objects):
-                print("initial \(objects.count)")
-                break
-            case .update(let objects, deletions: let deletions, insertions: let insertions, modifications: let modifications):
-                print("update \(objects.count)")
-                print("insertions \(insertions.map{ "\($0)" }.joined(separator: ","))")
-                print("deletions \(deletions.map{ "\($0)" }.joined(separator: ","))")
-                print("modifications \(modifications.map{ "\($0)" }.joined(separator: ","))")
-                break
-            case .error(let error):
-                print("error \(error.localizedDescription)")
-                break
-            }
-        }
     }
     
     func getDetail(_ id: Int, completion: @escaping (MovieDetailResponse?) -> Void) {
@@ -81,16 +61,23 @@ class MovieRepositoryRealmImpl: BaseRepository, MovieRepository {
             try realDB.write {
                 // Build Movie Objects
                 let movieObjs =  data?.map{ mov -> MovieObject in
-                    var genres = [GenreObject]()
-                    mov.genreIDS?.forEach{ genreId in
-                        if let genreObj = realDB.object(ofType: GenreObject.self, forPrimaryKey: genreId){
-                            genres.append(genreObj)
+                    if let movieObject = realDB.object(ofType: MovieObject.self, forPrimaryKey: mov.id){
+                        return movieObject
+                    } else {
+                        let genres = mov.genreIDS?.map{ genreId -> GenreObject in
+                            // Build Genre Object
+                            var genreObj = realDB.object(ofType: GenreObject.self, forPrimaryKey: genreId)
+                            if genreObj == nil {
+                                genreObj = GenreObject()
+                                genreObj?.id = 0
+                                genreObj?.name = ""
+                            }
+                            return genreObj!
                         }
+                        return mov.toMovieObject(genres: genres ?? [])
                     }
-                    let movieObj =  mov.toMovieObject(genres: genres)
-                    return movieObj
                 }
-                realDB.add(movieObjs ?? [], update: .modified)
+                
                 // Build Belong To Type Object
                 if let belongToType = realDB.object(ofType: BelongToTypeObject.self, forPrimaryKey: type.rawValue){
                     belongToType.movies.append(objectsIn: movieObjs ?? [])
@@ -114,15 +101,15 @@ class MovieRepositoryRealmImpl: BaseRepository, MovieRepository {
             try realDB.write{
                 if let obj = movieObject {
                     let similarMovieObjects = data.map { movie -> MovieObject in
-                        var genres = [GenreObject]()
-                        movie.genreIDS?.forEach{ genreId in
-                            if let genreObj = realDB.object(ofType: GenreObject.self, forPrimaryKey: genreId){
-                                genres.append(genreObj)
+                        if let theMovie = realDB.object(ofType: MovieObject.self, forPrimaryKey: movie.id) {
+                            return theMovie
+                        } else {
+                            let genres = movie.genreIDS?.map{ genreId -> GenreObject in
+                                return realDB.object(ofType: GenreObject.self, forPrimaryKey: genreId)!
                             }
+                            return movie.toMovieObject(genres: genres ?? [])
                         }
-                        return movie.toMovieObject(genres: genres)
                     }
-                    realDB.add(similarMovieObjects, update: .modified)
                     obj.similarMovies.append(objectsIn: similarMovieObjects)
                     realDB.add(obj, update: .modified)
                 }
