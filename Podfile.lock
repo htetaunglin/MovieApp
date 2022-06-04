@@ -1,10 +1,11 @@
 PODS:
   - Alamofire (5.6.1)
-  - Realm (10.25.1):
-    - Realm/Headers (= 10.25.1)
-  - Realm/Headers (10.25.1)
-  - RealmSwift (10.25.1):
-    - Realm (= 10.25.1)
+  - Differentiator (5.0.0)
+  - Realm (10.27.0):
+    - Realm/Headers (= 10.27.0)
+  - Realm/Headers (10.27.0)
+  - RealmSwift (10.27.0):
+    - Realm (= 10.27.0)
   - RxAlamofire (6.1.1):
     - RxAlamofire/Core (= 6.1.1)
   - RxAlamofire/Core (6.1.1):
@@ -13,6 +14,10 @@ PODS:
   - RxCocoa (6.5.0):
     - RxRelay (= 6.5.0)
     - RxSwift (= 6.5.0)
+  - RxDataSources (5.0.0):
+    - Differentiator (~> 5.0)
+    - RxCocoa (~> 6.0)
+    - RxSwift (~> 6.0)
   - RxRealm (5.0.4):
     - Realm (~> 10.21)
     - RealmSwift (~> 10.21)
@@ -31,6 +36,7 @@ DEPENDENCIES:
   - Alamofire (~> 5.5)
   - RealmSwift
   - RxAlamofire
+  - RxDataSources (~> 5.0)
   - RxRealm
   - RxSwift (= 6.5.0)
   - SDWebImage (~> 5.0)
@@ -40,10 +46,12 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - Alamofire
+    - Differentiator
     - Realm
     - RealmSwift
     - RxAlamofire
     - RxCocoa
+    - RxDataSources
     - RxRealm
     - RxRelay
     - RxSwift
@@ -53,10 +61,12 @@ SPEC REPOS:
 
 SPEC CHECKSUMS:
   Alamofire: 87bd8c952f9a4454320fce00d9cc3de57bcadaf5
-  Realm: 1a6e9b4f6983711655d8c0bcb6d2d29c3afbb1f3
-  RealmSwift: e72669550d27082aa4fad5d176f5076cfe806245
+  Differentiator: e8497ceab83c1b10ca233716d547b9af21b9344d
+  Realm: 9ca328bd7e700cc19703799785e37f77d1a130f2
+  RealmSwift: 271de77b09a73c5e46ee3252283878153bd5d288
   RxAlamofire: beb75a1c452d0de225651db4903f5d29d034a620
   RxCocoa: 94f817b71c07517321eb4f9ad299112ca8af743b
+  RxDataSources: aa47cc1ed6c500fa0dfecac5c979b723542d79cf
   RxRealm: 666c8785327fe2fff972a3093b35dc7055c1ca38
   RxRelay: 1de1523e604c72b6c68feadedd1af3b1b4d0ecbd
   RxSwift: 5710a9e6b17f3c3d6e40d6e559b9fa1e813b2ef8
@@ -64,6 +74,6 @@ SPEC CHECKSUMS:
   Wormholy: 3252bc3e55a1847ef9a0976c1377bd77bf3635fa
   YouTubePlayer: 2b5f2830d8f9b2cde942083211291e382c9e6bd5
 
-PODFILE CHECKSUM: 16a3b249e817249156549547f5bbca3bf28ff582
+PODFILE CHECKSUM: 2d00135fa7748239cbaedcce05c228d1b853d4f8
 
 COCOAPODS: 1.11.2

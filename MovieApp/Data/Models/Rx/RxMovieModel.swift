@@ -9,12 +9,9 @@ import Foundation
 import RxSwift
 
 protocol RxMovieModel {
-    // Showcase
-    //    func getTopRelatedMoveiList(page: Int, completion: @escaping (MDBResult<MovieListResponse>) -> Void)
-    //    func getPopularMovieList(completion: @escaping (MDBResult<[MovieResult]>) -> Void)
-    //    func getUpcomingMovieList(completion: @escaping (MDBResult<[MovieResult]>) -> Void)
-    
     func getPopularMovieList() -> Observable<[MovieResult]>
+    func getTopRelatedMovieList(page: Int) -> Observable<[MovieResult]>
+    func getUpcomingMovieList() -> Observable<[MovieResult]>
 }
 
 class RxMovieModelImpl: BaseModel, RxMovieModel {
@@ -27,29 +24,36 @@ class RxMovieModelImpl: BaseModel, RxMovieModel {
     
     let disposeBag = DisposeBag()
     
+
     func getPopularMovieList() -> Observable<[MovieResult]> {
         let contentType : MovieSeriesGroupType = .popularMovies
         let observableRemoteMovieList = rxNetworkAgent.getPopularMovieList()
         observableRemoteMovieList.subscribe { response in
             self.movieRepo.saveList(type: contentType, data: response.results)
         }.disposed(by: disposeBag)
-        
         let observableLocalMovieList = movieRxRepo.getMoviesByGroupType(type: contentType)
         return observableLocalMovieList
-        //        return RxNetworkingAgent.shared.getPopularMovieList()
-        //            .do { response in
-        //                self.movieRepo.saveList(type: contentType, data: response.results)
-        //            }
-        //            .catchAndReturn(MovieListResponse.empty())
-        //            .flatMap{ _ -> Observable<[MovieResult]> in
-        //                return Observable.create{ (observer) -> Disposable in
-        //                    let observableMovieList = self.movieRxRepo.getMoviesByGroupType(type: contentType)
-        ////                    self.movieRepo.getMoviesByGroupType(type: contentType){
-        ////                        observer.onNext($0)
-        ////                        observer.onCompleted()
-        ////                    }
-        //                    return Disposables.create()
-        //                }
-        
     }
+    
+    func getTopRelatedMovieList(page: Int) -> Observable<[MovieResult]> {
+        let contentType : MovieSeriesGroupType = .topRatedMovies
+        let observableRemoteMovieList = rxNetworkAgent.getTopRelatedMovieList(page: page)
+        observableRemoteMovieList.subscribe { response in
+            self.movieRepo.saveList(type: contentType, data: response.results)
+        }.disposed(by: disposeBag)
+        //TODO Pagination
+        let observableLocalMovieList = movieRxRepo.getMoviesByGroupType(type: contentType)
+        return observableLocalMovieList
+    }
+    
+    func getUpcomingMovieList() -> Observable<[MovieResult]> {
+        let contentType : MovieSeriesGroupType = .upcomingMovies
+        let observableRemoteMovieList = rxNetworkAgent.getUpcomingMovieList()
+        observableRemoteMovieList.subscribe { response in
+            self.movieRepo.saveList(type: contentType, data: response.results)
+        }.disposed(by: disposeBag)
+        let observableLocalMovieList = movieRxRepo.getMoviesByGroupType(type: contentType)
+        return observableLocalMovieList
+    }
+    
 }

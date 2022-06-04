@@ -7,7 +7,6 @@
 
 import Foundation
 import RxSwift
-import RxRealm
 import RealmSwift
 
 protocol RxMovieRepository {
@@ -17,6 +16,7 @@ protocol RxMovieRepository {
 class RxMovieRepositoryImpl: BaseRepository, RxMovieRepository {
     
     static let shared : RxMovieRepository = RxMovieRepositoryImpl()
+    private override init() {}
     
     let genreRepository = GenreRepositoryRealmImpl.shared
     

@@ -14,5 +14,6 @@ target 'MovieApp' do
   pod 'RxSwift', '6.5.0'
   pod 'RxAlamofire'
   pod "RxRealm"
+  pod 'RxDataSources', '~> 5.0'
 
 end

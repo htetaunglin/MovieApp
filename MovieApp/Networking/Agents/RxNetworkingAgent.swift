@@ -24,9 +24,33 @@ class RxNetworkingAgent : RxNetworkingAgentProtocol {
             .flatMap{ Observable.just($0.1) }
     }
     
+    func getUpcomingMovieList() -> Observable<MovieListResponse> {
+        return RxAlamofire
+            .requestDecodable(MDBEndpoint.upcomingMovieList)
+            .flatMap{ Observable.just($0.1) }
+    }
+    
     func searchMovie(_ text: String, page: Int) -> Observable<MovieListResponse> {
         return RxAlamofire
             .requestDecodable(MDBEndpoint.searchMovie(page, text))
+            .flatMap{ Observable.just($0.1) }
+    }
+    
+    func getPopularActors(page: Int) -> Observable<ActorListResponse> {
+        return RxAlamofire
+            .requestDecodable(MDBEndpoint.popularPeople(page))
+            .flatMap{ Observable.just($0.1) }
+    }
+    
+    func getPopularSeriesList() -> Observable<MovieListResponse> {
+        return RxAlamofire
+            .requestDecodable(MDBEndpoint.popularSeriesList)
+            .flatMap{ Observable.just($0.1) }
+    }
+    
+    func getTopRelatedMovieList(page: Int) -> Observable<MovieListResponse> {
+        return RxAlamofire
+            .requestDecodable(MDBEndpoint.topRelatedMovieList(page))
             .flatMap{ Observable.just($0.1) }
     }
 }

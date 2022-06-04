@@ -14,11 +14,9 @@ class ShowCaseTableViewCell: UITableViewCell {
     @IBOutlet weak var collectionViewShowCase: UICollectionView!
     @IBOutlet weak var heightCollectionViewShowCase: NSLayoutConstraint!
 
-    var data: MovieListResponse? {
+    var data: [MovieResult] = [] {
         didSet{
-            if let _ = data {
-                collectionViewShowCase.reloadData()
-            }
+            collectionViewShowCase.reloadData()
         }
     }
     weak var moreShowCaseDelegate: MoreShowCaseDelegate?
@@ -60,12 +58,12 @@ class ShowCaseTableViewCell: UITableViewCell {
 
 extension ShowCaseTableViewCell: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout{
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return data?.results?.count ?? 0
+        return data.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell =  collectionView.dequeueCell(identifier: ShowCaseCollectionViewCell.identifier, indexPath: indexPath) as ShowCaseCollectionViewCell
-        cell.data = data?.results?[indexPath.row]
+        cell.data = data[indexPath.row]
         return cell
     }
     
@@ -76,7 +74,7 @@ extension ShowCaseTableViewCell: UICollectionViewDataSource, UICollectionViewDel
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if let movieId = data?.results?[indexPath.row].id {
+        if let movieId = data[indexPath.row].id {
             self.movieItemDelegate?.onTapMovie(id: movieId)
         }
     }
