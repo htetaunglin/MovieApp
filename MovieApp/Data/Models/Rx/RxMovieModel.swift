@@ -20,7 +20,7 @@ class RxMovieModelImpl: BaseModel, RxMovieModel {
     private override init(){}
     
     private let movieRepo: MovieRepository = MovieRepositoryRealmImpl.shared
-    private let movieRxRepo: RxMovieRepository = RxMovieRepositoryImpl.shared
+    private let movieRxRepo: RxMovieRepository = RxMovieRepositoryRealmImpl.shared
     
     let disposeBag = DisposeBag()
     

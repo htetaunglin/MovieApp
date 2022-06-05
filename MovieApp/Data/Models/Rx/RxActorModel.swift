@@ -21,7 +21,7 @@ class RxActorModelImpl: BaseModel, RxActorModel {
     let disposeBag = DisposeBag()
     
     private let actorRepo: ActorRepository = ActorRepositoryRealmImpl.shared
-    private let rxActorRepo: RxActorRepository = RxActorRepositoryImpl.shared
+    private let rxActorRepo: RxActorRepository = RxActorRepositoryRealmImpl.shared
     
     func getPopularActor(page: Int) -> Observable<ActorListResponse> {
         let observableRemoteActorList = rxNetworkAgent.getPopularActors(page: page)

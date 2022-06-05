@@ -7,15 +7,15 @@
 
 import Foundation
 import RxSwift
-import RealmSwift
+//import RxRealm
 
 protocol RxMovieRepository {
     func getMoviesByGroupType(type: MovieSeriesGroupType) -> Observable<[MovieResult]>
 }
 
-class RxMovieRepositoryImpl: BaseRepository, RxMovieRepository {
+class RxMovieRepositoryRealmImpl: BaseRepository, RxMovieRepository {
     
-    static let shared : RxMovieRepository = RxMovieRepositoryImpl()
+    static let shared : RxMovieRepository = RxMovieRepositoryRealmImpl()
     private override init() {}
     
     let genreRepository = GenreRepositoryRealmImpl.shared
@@ -34,4 +34,5 @@ class RxMovieRepositoryImpl: BaseRepository, RxMovieRepository {
         return Observable.empty()
     }
 }
+
 

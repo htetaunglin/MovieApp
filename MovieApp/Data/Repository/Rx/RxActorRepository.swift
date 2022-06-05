@@ -14,8 +14,8 @@ protocol RxActorRepository {
 }
 
 
-class RxActorRepositoryImpl: BaseRepository, RxActorRepository {
-    static let shared : RxActorRepository = RxActorRepositoryImpl()
+class RxActorRepositoryRealmImpl: BaseRepository, RxActorRepository {
+    static let shared : RxActorRepository = RxActorRepositoryRealmImpl()
     private override init() {}
     
     private let pageSize: Int = 20
