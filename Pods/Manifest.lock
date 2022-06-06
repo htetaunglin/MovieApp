@@ -14,6 +14,9 @@ PODS:
   - RxCocoa (6.5.0):
     - RxRelay (= 6.5.0)
     - RxSwift (= 6.5.0)
+  - RxCoreData (1.0.1):
+    - RxCocoa (~> 6.0)
+    - RxSwift (~> 6.0)
   - RxDataSources (5.0.0):
     - Differentiator (~> 5.0)
     - RxCocoa (~> 6.0)
@@ -36,6 +39,7 @@ DEPENDENCIES:
   - Alamofire (~> 5.5)
   - RealmSwift
   - RxAlamofire
+  - RxCoreData (~> 1.0.0)
   - RxDataSources (~> 5.0)
   - RxRealm
   - RxSwift (= 6.5.0)
@@ -51,6 +55,7 @@ SPEC REPOS:
     - RealmSwift
     - RxAlamofire
     - RxCocoa
+    - RxCoreData
     - RxDataSources
     - RxRealm
     - RxRelay
@@ -66,6 +71,7 @@ SPEC CHECKSUMS:
   RealmSwift: 271de77b09a73c5e46ee3252283878153bd5d288
   RxAlamofire: beb75a1c452d0de225651db4903f5d29d034a620
   RxCocoa: 94f817b71c07517321eb4f9ad299112ca8af743b
+  RxCoreData: 4c1686b30499c05b90104eec1a879f41aa1a0a65
   RxDataSources: aa47cc1ed6c500fa0dfecac5c979b723542d79cf
   RxRealm: 666c8785327fe2fff972a3093b35dc7055c1ca38
   RxRelay: 1de1523e604c72b6c68feadedd1af3b1b4d0ecbd
@@ -74,6 +80,6 @@ SPEC CHECKSUMS:
   Wormholy: 3252bc3e55a1847ef9a0976c1377bd77bf3635fa
   YouTubePlayer: 2b5f2830d8f9b2cde942083211291e382c9e6bd5
 
-PODFILE CHECKSUM: 2d00135fa7748239cbaedcce05c228d1b853d4f8
+PODFILE CHECKSUM: 55ba38ea9d2f0da92f789782cf7e4087571d938e
 
 COCOAPODS: 1.11.2

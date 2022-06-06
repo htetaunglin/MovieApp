@@ -19,8 +19,8 @@ class RxMovieModelImpl: BaseModel, RxMovieModel {
     static let shared = RxMovieModelImpl()
     private override init(){}
     
-    private let movieRepo: MovieRepository = MovieRepositoryRealmImpl.shared
-    private let movieRxRepo: RxMovieRepository = RxMovieRepositoryRealmImpl.shared
+    private let movieRepo: MovieRepository = MovieRepositoryImpl.shared
+    private let movieRxRepo: RxMovieRepository = RxMovieRepositoryImpl.shared
     
     let disposeBag = DisposeBag()
     

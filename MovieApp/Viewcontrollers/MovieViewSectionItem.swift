@@ -15,7 +15,7 @@ enum SectionItem {
     case movieShowTimeSection
     case movieGenreSection(items: [MovieGenre])
     case showcaseMovieSection(items: [MovieResult])
-    case bestActorSection(items: ActorListResponse)
+    case bestActorSection(items: [ActorInfoResponse])
 }
 
 enum HomeMovieSectionModel: SectionModelType {

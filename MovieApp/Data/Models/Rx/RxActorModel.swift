@@ -9,7 +9,8 @@ import Foundation
 import RxSwift
 
 protocol RxActorModel {
-    func getPopularActor(page: Int) -> Observable<ActorListResponse>
+    func subscribePopularActor() -> Observable<[ActorInfoResponse]>
+    func getPopularActor(page: Int)
 }
 
 
@@ -20,20 +21,18 @@ class RxActorModelImpl: BaseModel, RxActorModel {
     var totalPageActorList: Int = 1
     let disposeBag = DisposeBag()
     
-    private let actorRepo: ActorRepository = ActorRepositoryRealmImpl.shared
-    private let rxActorRepo: RxActorRepository = RxActorRepositoryRealmImpl.shared
+    private let actorRepo: ActorRepository = ActorRepositoryImpl.shared
+    private let rxActorRepo: RxActorRepository = RxActorRepositoryImpl.shared
     
-    func getPopularActor(page: Int) -> Observable<ActorListResponse> {
+    func subscribePopularActor() -> Observable<[ActorInfoResponse]> {
+        let observableLocalActorList = rxActorRepo.getPopularActors()
+        return observableLocalActorList
+    }
+    
+    func getPopularActor(page: Int) {
         let observableRemoteActorList = rxNetworkAgent.getPopularActors(page: page)
         observableRemoteActorList.subscribe (onNext: { response in
             self.actorRepo.save(list: response.results ?? [])
         }).disposed(by: disposeBag)
-        
-        let observableLocalActorList = rxActorRepo.getActorList(page: page, type: .popularActor)
-            .flatMap{ actors -> Observable<ActorListResponse> in
-                let response = ActorListResponse(dates: nil, page: page, results: actors, totalPages: self.totalPageActorList, totalResults: 0)
-                return .just(response)
-            }
-        return observableLocalActorList
     }
 }

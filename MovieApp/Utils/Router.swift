@@ -31,7 +31,7 @@ extension UIViewController{
         self.navigationController?.pushViewController(vc, animated: true)
     }
     
-    func navigateToMoreActorsViewController(initData: ActorListResponse?){
+    func navigateToMoreActorsViewController(initData: [ActorInfoResponse]){
         let vc = MoreActorsViewController()
         //Transition style
         vc.modalPresentationStyle = .fullScreen

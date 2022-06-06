@@ -114,6 +114,7 @@
 		990FE5B6284B3F200039F7B8 /* RxActorModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 990FE5B5284B3F200039F7B8 /* RxActorModel.swift */; };
 		990FE5B8284B3F660039F7B8 /* RxActorRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 990FE5B7284B3F660039F7B8 /* RxActorRepository.swift */; };
 		990FE5BA284B51410039F7B8 /* RxSeriesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 990FE5B9284B51410039F7B8 /* RxSeriesModel.swift */; };
+		99555129284C94F70094038C /* RxContentTypeRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99555128284C94F70094038C /* RxContentTypeRepository.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -225,6 +226,7 @@
 		990FE5B5284B3F200039F7B8 /* RxActorModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RxActorModel.swift; sourceTree = "<group>"; };
 		990FE5B7284B3F660039F7B8 /* RxActorRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RxActorRepository.swift; sourceTree = "<group>"; };
 		990FE5B9284B51410039F7B8 /* RxSeriesModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RxSeriesModel.swift; sourceTree = "<group>"; };
+		99555128284C94F70094038C /* RxContentTypeRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RxContentTypeRepository.swift; sourceTree = "<group>"; };
 		A7431C05D6A7AD89BA469C0C /* Pods-MovieApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MovieApp.release.xcconfig"; path = "Target Support Files/Pods-MovieApp/Pods-MovieApp.release.xcconfig"; sourceTree = "<group>"; };
 		A8E523B7016AF66A2D492CAF /* Pods_MovieApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MovieApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C0B81FCBFBED34A3E63A91EC /* Pods-MovieApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MovieApp.debug.xcconfig"; path = "Target Support Files/Pods-MovieApp/Pods-MovieApp.debug.xcconfig"; sourceTree = "<group>"; };
@@ -443,6 +445,7 @@
 			children = (
 				990FE4E7284B1EB70039F7B8 /* RxMovieRepository.swift */,
 				990FE5B7284B3F660039F7B8 /* RxActorRepository.swift */,
+				99555128284C94F70094038C /* RxContentTypeRepository.swift */,
 			);
 			path = Rx;
 			sourceTree = "<group>";
@@ -900,6 +903,7 @@
 				990FE55E284B1EB70039F7B8 /* MovieItemDelegate.swift in Sources */,
 				990FE588284B1EB70039F7B8 /* BaseModel.swift in Sources */,
 				990FE5A4284B1EB70039F7B8 /* BestActorTableViewCell.swift in Sources */,
+				99555129284C94F70094038C /* RxContentTypeRepository.swift in Sources */,
 				990FE595284B1EB70039F7B8 /* NetworkingAgent.swift in Sources */,
 				990FE561284B1EB70039F7B8 /* SceneDelegate.swift in Sources */,
 				990FE5AA284B1EB70039F7B8 /* GenreCollectionViewCell.swift in Sources */,

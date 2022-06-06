@@ -30,7 +30,7 @@ class MovieViewController: UIViewController {
     private var popularSeriesList: [MovieResult]?
     private var topRelatedMovieList: MovieListResponse?
     private var movieGenreList: [MovieGenre]?
-    private var popularPeople: ActorListResponse?
+    private var popularPeople: [ActorInfoResponse]?
     
     let disposeBag = DisposeBag()
     
@@ -38,7 +38,7 @@ class MovieViewController: UIViewController {
     let observablePopularMovies = RxMovieModelImpl.shared.getPopularMovieList()
     let observablePopularSeries = RxSeriesModelImpl.shared.getPopularSeriesList()
     let observableTopRelateMovies = RxMovieModelImpl.shared.getTopRelatedMovieList(page: 1)
-    let observablePopularActors = RxActorModelImpl.shared.getPopularActor(page: 1)
+    let observablePopularActors = RxActorModelImpl.shared.subscribePopularActor()
     
     // MARK: - LifeCycle
     override func viewDidLoad() {
@@ -50,6 +50,7 @@ class MovieViewController: UIViewController {
         //        fetchMovieGenreList()
         //        fetchTopRelatedMovieList() <- Show case ✅
         //        fetchPopularPeople() ✅
+        RxActorModelImpl.shared.getPopularActor(page: 1)
         navigationItem.backButtonTitle = ""
         
         let dataSource = initDataSource()
@@ -213,7 +214,7 @@ extension MovieViewController: MovieItemDelegate {
 
 extension MovieViewController: ActorDelegate {
     func onTapMoreActors() {
-        navigateToMoreActorsViewController(initData: popularPeople)
+        navigateToMoreActorsViewController(initData: popularPeople ?? [])
     }
     
     func onTapActor(_ id: Int) {

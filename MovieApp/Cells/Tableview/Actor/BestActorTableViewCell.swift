@@ -13,7 +13,7 @@ class BestActorTableViewCell: UITableViewCell, ActorActionDelegate {
     @IBOutlet weak var lblMoreActors: UILabel!
     @IBOutlet weak var collectionViewActors: UICollectionView!
     
-    var data : ActorListResponse? {
+    var data : [ActorInfoResponse]? {
         didSet{
             if let _ = data {
                 collectionViewActors.reloadData()
@@ -62,13 +62,13 @@ class BestActorTableViewCell: UITableViewCell, ActorActionDelegate {
 
 extension BestActorTableViewCell: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout{
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return data?.results?.count ?? 0
+        return data?.count ?? 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueCell(identifier: BestActorCollectionViewCell.identifier, indexPath: indexPath) as BestActorCollectionViewCell
         cell.delegate = self
-        cell.data = data?.results?[indexPath.row]
+        cell.data = data?[indexPath.row]
         return cell
     }
     
@@ -79,7 +79,7 @@ extension BestActorTableViewCell: UICollectionViewDataSource, UICollectionViewDe
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if let id = data?.results?[indexPath.row].id {
+        if let id = data?[indexPath.row].id {
             actorDelegate?.onTapActor(id)
         }
     }

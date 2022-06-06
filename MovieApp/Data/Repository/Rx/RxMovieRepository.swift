@@ -7,7 +7,8 @@
 
 import Foundation
 import RxSwift
-//import RxRealm
+import RxCoreData
+import CoreData
 
 protocol RxMovieRepository {
     func getMoviesByGroupType(type: MovieSeriesGroupType) -> Observable<[MovieResult]>
@@ -35,4 +36,25 @@ class RxMovieRepositoryRealmImpl: BaseRepository, RxMovieRepository {
     }
 }
 
-
+class RxMovieRepositoryImpl: BaseRepository, RxMovieRepository {
+    static let shared : RxMovieRepository = RxMovieRepositoryImpl()
+    private override init() {}
+    
+    let contentTypeRepo = RxContentTypeRepositoryImpl.shared
+    
+    func getMoviesByGroupType(type: MovieSeriesGroupType) -> Observable<[MovieResult]> {
+        let fetchRequest : NSFetchRequest<BelongsToTypeEntity> = BelongsToTypeEntity.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "%K = %@", "name", "\(type.rawValue)")
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
+        
+        return coreData.context.rx.entities(fetchRequest: fetchRequest)
+            .flatMap{ belongToTypeEntity -> Observable<[MovieResult]> in
+                let movies = belongToTypeEntity.first?.movies as? Set<MovieEntity>
+                return Observable.create{ (observer) -> Disposable in
+                    let items = movies?.map{ $0.toMovieResult() } ?? []
+                    observer.onNext(items)
+                    return Disposables.create()
+                }
+            }
+    }
+}

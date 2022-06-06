@@ -8,9 +8,11 @@
 import Foundation
 import RxSwift
 import RxRealm
+import RxCoreData
+import CoreData
 
 protocol RxActorRepository {
-    func getActorList(page: Int, type: ActorGroupType) -> Observable<[ActorInfoResponse]>
+    func getPopularActors() -> Observable<[ActorInfoResponse]>
 }
 
 
@@ -18,20 +20,22 @@ class RxActorRepositoryRealmImpl: BaseRepository, RxActorRepository {
     static let shared : RxActorRepository = RxActorRepositoryRealmImpl()
     private override init() {}
     
-    private let pageSize: Int = 20
-    
-    func getActorList(page: Int, type: ActorGroupType) -> Observable<[ActorInfoResponse]> {
+    func getPopularActors() -> Observable<[ActorInfoResponse]> {
         let actorObjs = realDB.objects(ActorObject.self)
             .sorted(byKeyPath: "popularity", ascending: false)
-            .suffix(from: (page * pageSize) - pageSize)
-            .prefix(pageSize)
-        return Observable.collection(from: actorObjs.base)
-            .flatMap{ actors -> Observable<[ActorInfoResponse]> in
-                return Observable.create{ (observer) -> Disposable in
-                    let items = actors.map{ $0.toActorInfoResponse() }
-                    observer.onNext(Array(items))
-                    return Disposables.create()
-                }
-            }
+        return Observable.collection(from: actorObjs)
+            .map{ $0.map{ $0.toActorInfoResponse()}}
+    }
+}
+
+class RxActorRepositoryImpl: BaseRepository, RxActorRepository {
+    static let shared : RxActorRepository = RxActorRepositoryImpl()
+    private override init() {}
+    
+    func getPopularActors() -> Observable<[ActorInfoResponse]> {
+        let fetchRequest : NSFetchRequest<ActorEntity> = ActorEntity.fetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "popularity", ascending: false)]
+        return coreData.context.rx.entities(fetchRequest: fetchRequest)
+            .map{ $0.map{ $0.toActorInfoResponse()}}
     }
 }

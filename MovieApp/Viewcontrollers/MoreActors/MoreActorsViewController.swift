@@ -6,83 +6,77 @@
 //
 
 import UIKit
+import RxSwift
+import RxCocoa
 
 class MoreActorsViewController: UIViewController {
-
+    
     @IBOutlet weak var actorCollectionView: UICollectionView!
     
-    var initData : ActorListResponse? {
+    var initData : [ActorInfoResponse]? {
         didSet {
-            if let results = initData?.results {
-                data.append(contentsOf: results)
+            if let results = initData {
+                actorResults.onNext(results)
             }
         }
     }
-    private var data : [ActorInfoResponse] = []
     
-    private var totalpage: Int = 1
-    private var currentPage: Int = 1
+    let disposeBag: DisposeBag = DisposeBag()
+    let actorResults: BehaviorSubject<[ActorInfoResponse]> = BehaviorSubject(value: [])
     
     private let actorModel = ActorModelImpl.shared
-//    private let netWorkAgent: MovieDBNetworkAgent = MovieDBNetworkAgent.shared
-
+    private let rxActorModel = RxActorModelImpl.shared
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        totalpage = initData?.totalPages ?? 1
-        currentPage = initData?.page ?? 1
         registerCollectionView()
-        
+        loadSubscription()
+    }
+    
+    private func loadSubscription(){
+        subscribeActors()
+        addCollectionViewBindingObserver()
+        addCollectionViewPagingObserver()
+    }
+    
+    private func subscribeActors(){
+        RxActorModelImpl.shared.subscribePopularActor()
+            .subscribe(onNext: self.actorResults.onNext)
+            .disposed(by: disposeBag)
     }
     
     private func registerCollectionView(){
-        actorCollectionView.dataSource = self
         actorCollectionView.delegate = self
         actorCollectionView.registerForCell(identifier: BestActorCollectionViewCell.identifier)
     }
     
+    
+    private func addCollectionViewBindingObserver() {
+        self.actorResults.bind(to: actorCollectionView.rx.items(cellIdentifier: BestActorCollectionViewCell.identifier, cellType: BestActorCollectionViewCell.self)) { (row, element, cell) in
+            cell.data = element
+        }.disposed(by: disposeBag)
+    }
+    
+    
+    private func addCollectionViewPagingObserver(){
+        actorCollectionView.rx.willDisplayCell
+            .subscribe(onNext: { value in
+                let isAtLastRow = value.at.row == (try! self.actorResults.value().count - 1)
+                if(isAtLastRow) {
+                    self.fetchActors(page: (try! self.actorResults.value().count / 20) + 1)
+                }
+            }).disposed(by: disposeBag)
+    }
+    
     private func fetchActors(page: Int){
-        actorModel.getPopularPeople(page: page){ result in
-            switch result {
-            case .success(let response):
-                self.currentPage = response.page
-                self.totalpage = response.totalPages
-                self.data.append(contentsOf: response.results ?? [])
-                self.actorCollectionView.reloadData()
-            case .failure(let error):
-                debugPrint("Actor Error  > \(error.description)")
-            }
-        }
+        rxActorModel.getPopularActor(page: page)
     }
 }
 
-extension MoreActorsViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return data.count
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueCell(identifier: BestActorCollectionViewCell.identifier, indexPath: indexPath) as BestActorCollectionViewCell
-        cell.data = data[indexPath.row]
-        return cell
-    }
-    
+extension MoreActorsViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let itemWidth : CGFloat = (collectionView.frame.width / 3) - 9
         let itemHeight : CGFloat = itemWidth * 1.5
         return CGSize(width: itemWidth, height: itemHeight)
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        let isAtLastRow = indexPath.row == (data.count - 1)
-        let hasMoreActors = currentPage < totalpage
-        if isAtLastRow && hasMoreActors {
-            fetchActors(page: currentPage + 1)
-        }
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if let actorId = data[indexPath.row].id {
-            navigateToActorDetail(actorId: actorId)
-        }
     }
 }
