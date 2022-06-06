@@ -60,10 +60,11 @@ class MoreActorsViewController: UIViewController {
     
     private func addCollectionViewPagingObserver(){
         actorCollectionView.rx.willDisplayCell
-            .subscribe(onNext: { value in
-                let isAtLastRow = value.at.row == (try! self.actorResults.value().count - 1)
+            .subscribe(onNext: { [weak self] value in
+                let itemCount = (try! self?.actorResults.value().count ?? 1)
+                let isAtLastRow = value.at.row == (itemCount - 1)
                 if(isAtLastRow) {
-                    self.fetchActors(page: (try! self.actorResults.value().count / 20) + 1)
+                    self?.fetchActors(page: (itemCount / 20) + 1)
                 }
             }).disposed(by: disposeBag)
     }
