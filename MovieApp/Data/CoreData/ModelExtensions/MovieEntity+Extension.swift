@@ -30,7 +30,7 @@ extension MovieEntity {
         )
     }
     
-    func toMovieDetailResponse() -> MovieDetailResponse? {
+    func toMovieDetailResponse() -> MovieDetailResponse {
         let genreEntities = (self.genres?.allObjects as? [GenreEntity]) ?? [GenreEntity]()
         let companyEntities = (self.productionCompanies?.allObjects as? [ProductionCompanyEntity]) ?? [ProductionCompanyEntity]()
         let countryEntities = (self.productionCountries?.allObjects as? [ProductionCountryEntity]) ?? [ProductionCountryEntity]()
