@@ -20,6 +20,8 @@ protocol RxNetworkingAgentProtocol {
     
     /// Series
     func getPopularSeriesList() -> Observable<MovieListResponse>
+    func getTVSeriesDetailById(_ id: Int) -> Observable<TVSeriesDetailResponse>
+    func getTVTrailerVideo(_ id: Int) -> Observable<TrailerResponse>
     
     /// Search
     func searchMovie(_ text: String, page: Int) -> Observable<MovieListResponse>

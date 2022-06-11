@@ -55,6 +55,7 @@ class MovieDetailViewController: UIViewController, MovieItemDelegate{
     private let seriesDetailModel = SeriesDetailModelImpl.shared
     
     private let rxMovieDetailModel = RxMovieDetailModelImpl.shared
+    private let rxTVSeriesDetailModel = RxSeriesDetailModelImpl.shared
     
     let filmDetailPublishSubject: PublishSubject<FilmDetailVo> = PublishSubject()
     let actorsBehaviorSubject: BehaviorSubject<[ActorInfoResponse]> = BehaviorSubject(value: [])
@@ -63,25 +64,13 @@ class MovieDetailViewController: UIViewController, MovieItemDelegate{
     var isTVSeries: Bool = false
     var filmId: Int = -1
     
-    private var productionCompanies: [ProductionCompany]?
-    //    private var movieCasts: [ActorInfoResponse]?
-    //    private var similarMovies: [MovieResult]?
     private var movieTrailers: [Trailer]?
-    
-    
     
     // MARK: - Life cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         initView()
         registerCollectionViewCells()
-        
-        // fetch data
-        if isTVSeries {
-            fetchTVSeriesDetail(id: filmId)
-        } else {
-//            rxMovieDetailModel.fetchMovieDetailById(filmId)
-        }
         
         // Subscribe
         subscribeFilmVo()
@@ -93,23 +82,14 @@ class MovieDetailViewController: UIViewController, MovieItemDelegate{
         subscribeSimilarMovie()
         // Subscribe Trailers
         subscribeTrailers()
-        
-        if isTVSeries {
-            fetchTVTrailers(id: filmId)
-        } else {
-            
-        }
     }
     
     private func subscribeMovieDetail(){
-        if isTVSeries {
-            //TODO TVSeries
-        } else {
-            RxMovieDetailModelImpl.shared.fetchMovieDetailById(filmId)
-                .map{ $0.toFilmDetailVo() }
-                .subscribe(onNext: filmDetailPublishSubject.onNext)
-                .disposed(by: disposeBag)
-        }
+        let observable = (isTVSeries ? rxTVSeriesDetailModel.fetchSeriesDetailById(filmId) : rxMovieDetailModel.fetchMovieDetailById(filmId))
+        observable
+            .map{ $0.toFilmDetailVo() }
+            .subscribe(onNext: filmDetailPublishSubject.onNext)
+            .disposed(by: disposeBag)
     }
     
     private func subscribeMovieCredit() {
@@ -148,14 +128,11 @@ class MovieDetailViewController: UIViewController, MovieItemDelegate{
     }
     
     private func subscribeTrailers(){
-        if isTVSeries {
-            
-        } else {
-            rxMovieDetailModel.fetchMovieTrailerVideo(filmId)
-                .do(onNext: { response in self.buttonPlayTrailer.isHidden = response.results?.isEmpty ?? true })
-                .subscribe(onNext: { self.movieTrailers = $0.results })
-                .disposed(by: disposeBag)
-        }
+        let observable = isTVSeries ? rxTVSeriesDetailModel.fetchSeriesTrailerVideo(filmId) :rxMovieDetailModel.fetchMovieTrailerVideo(filmId)
+        observable
+            .do(onNext: { response in self.buttonPlayTrailer.isHidden = response.results?.isEmpty ?? true })
+            .subscribe(onNext: { self.movieTrailers = $0.results })
+            .disposed(by: disposeBag)
     }
     
     
@@ -254,36 +231,6 @@ class MovieDetailViewController: UIViewController, MovieItemDelegate{
         lblPremiere.text = data.releaseDate
         lblDescription.text = data.description
     }
-    
-    // MARK: - API Methods
-    private func fetchTVSeriesDetail(id: Int){
-        seriesDetailModel.getTVSeriesDetailById(id) { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .success(let data):
-                self.bindData(data.toFilmDetailVo())
-                self.viewProduction.isHidden = data.productionCompanies?.isEmpty ?? true
-                self.productionCompanies = data.productionCompanies
-                self.collectionViewProduction.reloadData()
-            case .failure(let error):
-                debugPrint("TV Series \(id) Detail Error  > \(error.description)")
-            }
-        }
-    }
-    
-    
-    private func fetchTVTrailers(id: Int){
-        seriesDetailModel.getTVTrailerVideo(id) { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .success(let data):
-                self.movieTrailers = data.results
-                self.buttonPlayTrailer.isHidden = data.results?.isEmpty ?? true
-            case .failure(let error):
-                debugPrint("Movie Trailer \(id) Error  > \(error.description)")
-            }
-        }
-    }
 }
 
 // MARK: - UICollectionViewDataSource
@@ -303,18 +250,6 @@ extension MovieDetailViewController: UICollectionViewDelegateFlowLayout{
         }
         return CGSize(width: CGFloat(collectionView.frame.width/2.5), height: CGFloat(200))
     }
-    
-    //    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-    //        if collectionView == collectionViewSimilarMovie {
-    //            if let movieId = similarMovies?[indexPath.row].id {
-    //                onTapMovie(id: movieId)
-    //            }
-    //        } else if collectionView == collectionViewActors {
-    //            if let actorId = movieCasts?[indexPath.row].id {
-    //                navigateToActorDetail(actorId: actorId)
-    //            }
-    //        }
-    //    }
 }
 
 extension MovieDetailViewController: ActorActionDelegate {

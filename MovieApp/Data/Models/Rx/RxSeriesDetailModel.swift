@@ -9,8 +9,30 @@ import Foundation
 import RxSwift
 
 protocol RxSeriesDetailModel {
-    func subscribeMovieDetailById(_ id: Int) -> Observable<MovieDetailResponse>
-    func fetchMovieDetailById(_ id: Int)
-    func subscribeMovieCreditById(_ id: Int) -> Observable<[ActorInfoResponse]>
-    func fetchMovieCreditByMovieId(_ id: Int)
+    func fetchSeriesDetailById(_ id: Int) -> Observable<MovieDetailResponse>
+    func fetchSeriesTrailerVideo(_ id: Int) -> Observable<TrailerResponse>
+}
+
+class RxSeriesDetailModelImpl: BaseModel, RxSeriesDetailModel {
+    
+    static let shared: RxSeriesDetailModel = RxSeriesDetailModelImpl()
+    private override init() {}
+    
+    let disposeBag = DisposeBag()
+    
+    private let movieRepo: MovieRepository = MovieRepositoryImpl.shared
+    private let rxMovieRepo: RxMovieRepository = RxMovieRepositoryImpl.shared
+    
+    func fetchSeriesDetailById(_ id: Int) -> Observable<MovieDetailResponse> {
+        rxNetworkAgent.getTVSeriesDetailById(id)
+            .subscribe(onNext: {[weak self] response in
+                self?.movieRepo.saveSeriesDetail(data: response)
+            })
+            .disposed(by: disposeBag)
+        return rxMovieRepo.getDetail(id)
+    }
+    
+    func fetchSeriesTrailerVideo(_ id: Int) -> Observable<TrailerResponse> {
+        return rxNetworkAgent.getTVTrailerVideo(id)
+    }
 }
