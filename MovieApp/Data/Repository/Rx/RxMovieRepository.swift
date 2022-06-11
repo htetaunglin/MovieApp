@@ -14,9 +14,11 @@ protocol RxMovieRepository {
     func getMoviesByGroupType(type: MovieSeriesGroupType) -> Observable<[MovieResult]>
     func getDetail(_ id: Int) -> Observable<MovieDetailResponse>
     func getCasts(_ id: Int) -> Observable<[ActorInfoResponse]>
+    func getSimilarMovies(_ id: Int) -> Observable<[MovieResult]>
 }
 
 class RxMovieRepositoryRealmImpl: BaseRepository, RxMovieRepository {
+    
     static let shared : RxMovieRepository = RxMovieRepositoryRealmImpl()
     private override init() {}
 
@@ -44,7 +46,9 @@ class RxMovieRepositoryRealmImpl: BaseRepository, RxMovieRepository {
         return Observable.empty()
     }
     
-
+    func getSimilarMovies(_ id: Int) -> Observable<[MovieResult]> {
+        return Observable.empty()
+    }
 }
 
 class RxMovieRepositoryImpl: BaseRepository, RxMovieRepository {
@@ -106,6 +110,25 @@ class RxMovieRepositoryImpl: BaseRepository, RxMovieRepository {
                     return Disposables.create()
                 }
             }
+    }
+    
+    func getSimilarMovies(_ id: Int) -> Observable<[MovieResult]> {
+        let fetchRequest : NSFetchRequest<MovieEntity> = MovieEntity.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "%K = %@", "id", "\(id)")
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "popularity", ascending: true)]
+        return coreData.context.rx.entities(fetchRequest: fetchRequest)
+            .flatMap{ movies -> Observable<[MovieResult]> in
+                return Observable.create{ (observer) -> Disposable in
+                    if let firstItem = movies.first {
+                        let movieEntites = (firstItem.similarMovies?.allObjects as? [MovieEntity]) ?? [MovieEntity]()
+                        observer.onNext( movieEntites.map{ $0.toMovieResult() } )
+                    } else {
+//                        observer.onError(MovieNotFound())
+                    }
+                    return Disposables.create()
+                }
+            }
+        
     }
 }
 

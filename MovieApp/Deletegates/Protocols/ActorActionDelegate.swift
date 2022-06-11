@@ -9,4 +9,5 @@ import Foundation
 
 protocol ActorActionDelegate: AnyObject{
     func onTapFavorite(isFavorite: Bool)
+    func onTapActor(_ id: Int)
 }

@@ -13,6 +13,10 @@ protocol RxNetworkingAgentProtocol {
     func getPopularMovieList() -> Observable<MovieListResponse>
     func getUpcomingMovieList() -> Observable<MovieListResponse>
     func getTopRelatedMovieList(page: Int) -> Observable<MovieListResponse>
+    func getMovieSimilar(_ id: Int) -> Observable<MovieListResponse>
+    func getMovieDetailById(_ id: Int) -> Observable<MovieDetailResponse>
+    func getMovieCreditByMovieId(_ id: Int) -> Observable<MovieCreditResponse>
+    func getMovieTrailerVideo(_ id: Int) -> Observable<TrailerResponse>
     
     /// Series
     func getPopularSeriesList() -> Observable<MovieListResponse>

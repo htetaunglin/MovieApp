@@ -10,35 +10,35 @@ import RxSwift
 import SwiftUI
 
 protocol RxMovieDetailModel {
-    func subscribeMovieDetailById(_ id: Int) -> Observable<MovieDetailResponse>
-    func fetchMovieDetailById(_ id: Int)
-    func subscribeMovieCreditById(_ id: Int) -> Observable<[ActorInfoResponse]>
-    func fetchMovieCreditByMovieId(_ id: Int)
+    func fetchMovieDetailById(_ id: Int) -> Observable<MovieDetailResponse>
+    func fetchMovieCreditByMovieId(_ id: Int) -> Observable<[ActorInfoResponse]>
+    func fetchMovieSimilar(_ id: Int) -> Observable<[MovieResult]>
+    func fetchMovieTrailerVideo(_ id: Int) -> Observable<TrailerResponse>
 }
 
 class RxMovieDetailModelImpl: BaseModel, RxMovieDetailModel {
     static let shared: RxMovieDetailModel = RxMovieDetailModelImpl()
     private override init() {}
     
+    let disposeBag = DisposeBag()
+    
     private let movieRepo: MovieRepository = MovieRepositoryImpl.shared
     private let rxMovieRepo: RxMovieRepository = RxMovieRepositoryImpl.shared
     
-    func subscribeMovieDetailById(_ id: Int) -> Observable<MovieDetailResponse> {
+    
+    func fetchMovieDetailById(_ id: Int) -> Observable<MovieDetailResponse> {
+        rxNetworkAgent.getMovieDetailById(id)
+            .subscribe(onNext: { result in
+                self.movieRepo.saveMovieDetail(data: result)
+            }).disposed(by: disposeBag)
         return rxMovieRepo.getDetail(id)
     }
     
-    func fetchMovieDetailById(_ id: Int) {
-        networkAgent.getMovieDetailById(id){ result in
-            switch result{
-            case .success(let response):
-                self.movieRepo.saveMovieDetail(data: response)
-            case .failure(let error):
-                debugPrint("\(#function) \(error)")
-            }
-        }
-    }
-    
-    func subscribeMovieCreditById(_ id: Int) -> Observable<[ActorInfoResponse]> {
+    func fetchMovieCreditByMovieId(_ id: Int) -> Observable<[ActorInfoResponse]>  {
+        rxNetworkAgent.getMovieCreditByMovieId(id)
+            .subscribe(onNext: { response in
+                self.movieRepo.saveCasts(id, data: response.cast ?? [])
+            }).disposed(by: disposeBag)
         return rxMovieRepo.getCasts(id)
             .do(onNext: {value in
                 debugPrint("Subscribe \(value.count)")
@@ -47,15 +47,15 @@ class RxMovieDetailModelImpl: BaseModel, RxMovieDetailModel {
             })
     }
     
-    func fetchMovieCreditByMovieId(_ id: Int) {
-        networkAgent.getMovieCreditByMovieId(id){ result in
-            switch result {
-            case .success(let response):
-                debugPrint(response.cast?.count)
-                self.movieRepo.saveCasts(id, data: response.cast ?? [])
-            case .failure(let error):
-                debugPrint("\(#function) \(error)")
-            }
-        }
+    func fetchMovieSimilar(_ id: Int) -> Observable<[MovieResult]>{
+        rxNetworkAgent.getMovieSimilar(id)
+            .subscribe(onNext: { movies in
+                self.movieRepo.saveSimilarContent(id, data: movies.results ?? [])
+            }).disposed(by: disposeBag)
+        return rxMovieRepo.getSimilarMovies(id)
+    }
+    
+    func fetchMovieTrailerVideo(_ id: Int) -> Observable<TrailerResponse> {
+        return rxNetworkAgent.getMovieTrailerVideo(id)
     }
 }

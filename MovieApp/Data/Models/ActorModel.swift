@@ -18,7 +18,7 @@ class ActorModelImpl: BaseModel, ActorModel {
     static let shared = ActorModelImpl()
     private override init(){}
     
-    let actorRepo: ActorRepository = ActorRepositoryRealmImpl.shared
+    let actorRepo: ActorRepository = ActorRepositoryImpl.shared
     
     func getPopularPeople(page: Int = 1, completion: @escaping (MDBResult<ActorListResponse>) -> Void) {
         var netWorkResult = [ActorInfoResponse]()

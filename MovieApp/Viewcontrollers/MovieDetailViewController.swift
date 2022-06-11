@@ -55,15 +55,17 @@ class MovieDetailViewController: UIViewController, MovieItemDelegate{
     private let seriesDetailModel = SeriesDetailModelImpl.shared
     
     private let rxMovieDetailModel = RxMovieDetailModelImpl.shared
-        
+    
     let filmDetailPublishSubject: PublishSubject<FilmDetailVo> = PublishSubject()
+    let actorsBehaviorSubject: BehaviorSubject<[ActorInfoResponse]> = BehaviorSubject(value: [])
+    let similarMovieBehaviorSubject: BehaviorSubject<[MovieResult]> = BehaviorSubject(value: [])
     
     var isTVSeries: Bool = false
     var filmId: Int = -1
     
     private var productionCompanies: [ProductionCompany]?
-    private var movieCasts: [ActorInfoResponse]?
-    private var similarMovies: [MovieResult]?
+    //    private var movieCasts: [ActorInfoResponse]?
+    //    private var similarMovies: [MovieResult]?
     private var movieTrailers: [Trailer]?
     
     
@@ -73,29 +75,37 @@ class MovieDetailViewController: UIViewController, MovieItemDelegate{
         super.viewDidLoad()
         initView()
         registerCollectionViewCells()
-        // Subscribe
-        subscribeFilmVo()
-        subscribeMovie()
-        subscribeMovieCredit()
+        
+        // fetch data
         if isTVSeries {
             fetchTVSeriesDetail(id: filmId)
         } else {
-            rxMovieDetailModel.fetchMovieDetailById(filmId)
+//            rxMovieDetailModel.fetchMovieDetailById(filmId)
         }
-        rxMovieDetailModel.fetchMovieCreditByMovieId(filmId)
-        fetchSimilarMovie(id: filmId)
+        
+        // Subscribe
+        subscribeFilmVo()
+        // Subscribe Movie Detail
+        subscribeMovieDetail()
+        // Subscribe Movie Credit (Actors)
+        subscribeMovieCredit()
+        // Subscribe Movie Similar
+        subscribeSimilarMovie()
+        // Subscribe Trailers
+        subscribeTrailers()
+        
         if isTVSeries {
             fetchTVTrailers(id: filmId)
         } else {
-            fetchMovieTrailers(id: filmId)
+            
         }
     }
     
-    private func subscribeMovie(){
+    private func subscribeMovieDetail(){
         if isTVSeries {
             //TODO TVSeries
         } else {
-            RxMovieDetailModelImpl.shared.subscribeMovieDetailById(filmId)
+            RxMovieDetailModelImpl.shared.fetchMovieDetailById(filmId)
                 .map{ $0.toFilmDetailVo() }
                 .subscribe(onNext: filmDetailPublishSubject.onNext)
                 .disposed(by: disposeBag)
@@ -103,16 +113,63 @@ class MovieDetailViewController: UIViewController, MovieItemDelegate{
     }
     
     private func subscribeMovieCredit() {
-        RxMovieDetailModelImpl.shared.subscribeMovieCreditById(filmId)
+        RxMovieDetailModelImpl.shared.fetchMovieCreditByMovieId(filmId)
             .do(onNext: { actors in self.viewActor.isHidden = actors.isEmpty })
-            .bind(to: collectionViewActors.rx.items(cellIdentifier: BestActorCollectionViewCell.identifier, cellType: BestActorCollectionViewCell.self)){ row, elements, cell in cell.data = elements }
+            .subscribe(onNext: actorsBehaviorSubject.onNext)
             .disposed(by: disposeBag)
+        
+        actorsBehaviorSubject.bind(to: collectionViewActors.rx.items(cellIdentifier: BestActorCollectionViewCell.identifier, cellType: BestActorCollectionViewCell.self)){ row, elements, cell in
+                    cell.data = elements
+                    cell.delegate = self
+        }.disposed(by: disposeBag)
+        
+        collectionViewActors.rx.itemSelected.subscribe(onNext: { indexPath in
+            if let actorId = (try! self.actorsBehaviorSubject.value())[indexPath.row].id {
+                self.navigateToActorDetail(actorId: actorId)
+            }
+        }).disposed(by: disposeBag)
+    }
+    
+    private func subscribeSimilarMovie(){
+        RxMovieDetailModelImpl.shared.fetchMovieSimilar(filmId)
+            .do(onNext: { movies in self.viewSimilarMovie.isHidden = movies.isEmpty })
+            .subscribe(onNext: similarMovieBehaviorSubject.onNext)
+            .disposed(by: disposeBag)
+        
+        similarMovieBehaviorSubject
+            .bind(to: collectionViewSimilarMovie.rx.items(cellIdentifier: PopularFilmCollectionViewCell.identifier, cellType: PopularFilmCollectionViewCell.self)){ row, elements, cell in cell.data = elements }
+            .disposed(by: disposeBag)
+        
+        collectionViewSimilarMovie.rx.itemSelected.subscribe(onNext: { indexPath in
+            if let movieId = (try! self.similarMovieBehaviorSubject.value())[indexPath.row].id {
+                self.navigateToFilmDetailViewController(movieId: movieId, isTVSeries: false)
+            }
+        }).disposed(by: disposeBag)
+    }
+    
+    private func subscribeTrailers(){
+        if isTVSeries {
+            
+        } else {
+            rxMovieDetailModel.fetchMovieTrailerVideo(filmId)
+                .do(onNext: { response in self.buttonPlayTrailer.isHidden = response.results?.isEmpty ?? true })
+                .subscribe(onNext: { self.movieTrailers = $0.results })
+                .disposed(by: disposeBag)
+        }
     }
     
     
     private func subscribeFilmVo(){
         filmDetailPublishSubject
             .subscribe(onNext: bindData)
+            .disposed(by: disposeBag)
+        
+        filmDetailPublishSubject
+            .map{ $0.productions ?? [] }
+            .do(onNext: { self.viewProduction.isHidden = $0.isEmpty })
+            .bind(to: collectionViewProduction.rx.items(cellIdentifier: ProductionCollectionViewCell.identifier, cellType: ProductionCollectionViewCell.self)){ row, element, cell in
+                cell.data = element
+            }
             .disposed(by: disposeBag)
     }
     
@@ -149,11 +206,9 @@ class MovieDetailViewController: UIViewController, MovieItemDelegate{
         collectionViewActors.delegate = self
         collectionViewActors.registerForCell(identifier: BestActorCollectionViewCell.identifier)
         
-        collectionViewProduction.dataSource = self
         collectionViewProduction.delegate = self
         collectionViewProduction.registerForCell(identifier: ProductionCollectionViewCell.identifier)
         
-        collectionViewSimilarMovie.dataSource = self
         collectionViewSimilarMovie.delegate = self
         collectionViewSimilarMovie.registerForCell(identifier: PopularFilmCollectionViewCell.identifier)
     }
@@ -216,48 +271,6 @@ class MovieDetailViewController: UIViewController, MovieItemDelegate{
         }
     }
     
-    private func fetchMovieCredit(id: Int){
-        rxMovieDetailModel.fetchMovieCreditByMovieId(id)
-//        movieDetailModel.getMovieCreditByMovieId(id) { [weak self] result in
-//            guard let self = self else { return }
-//            switch result{
-//            case .success(let list):
-//                debugPrint(list.count)
-//                self.viewActor.isHidden = list.isEmpty
-//                self.movieCasts = list
-//                self.collectionViewActors.reloadData()
-//            case .failure(let error):
-//                debugPrint("Movie \(id) Credit Error  > \(error.description)")
-//            }
-//        }
-    }
-    
-    private func fetchSimilarMovie(id: Int){
-        movieDetailModel.getMovieSimilar(id) { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .success(let data):
-                self.viewSimilarMovie.isHidden = data.isEmpty
-                self.similarMovies = data
-                self.collectionViewSimilarMovie.reloadData()
-            case .failure(let error):
-                debugPrint("Similar Movie \(id) Error  > \(error.description)")
-            }
-        }
-    }
-    
-    private func fetchMovieTrailers(id: Int){
-        movieDetailModel.getMovieTrailerVideo(id) { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .success(let data):
-                self.movieTrailers = data.results
-                self.buttonPlayTrailer.isHidden = data.results?.isEmpty ?? true
-            case .failure(let error):
-                debugPrint("Movie Trailer \(id) Error  > \(error.description)")
-            }
-        }
-    }
     
     private func fetchTVTrailers(id: Int){
         seriesDetailModel.getTVTrailerVideo(id) { [weak self] result in
@@ -274,62 +287,42 @@ class MovieDetailViewController: UIViewController, MovieItemDelegate{
 }
 
 // MARK: - UICollectionViewDataSource
-extension MovieDetailViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout{
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if collectionView == collectionViewProduction {
-            return productionCompanies?.count ?? 0
-        } else if collectionView == collectionViewActors {
-            return movieCasts?.count ?? 0
-        } else if collectionView == collectionViewSimilarMovie {
-            return similarMovies?.count ?? 0
-        }
-        return 10
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        switch collectionView {
-        case collectionViewActors:
-            let cell = collectionView.dequeueCell(identifier: BestActorCollectionViewCell.identifier, indexPath: indexPath) as BestActorCollectionViewCell
-            cell.data = movieCasts?[indexPath.row]
-            return cell
-        case collectionViewProduction:
-            let cell = collectionView.dequeueCell(identifier: ProductionCollectionViewCell.identifier, indexPath: indexPath) as ProductionCollectionViewCell
-            cell.data = productionCompanies?[indexPath.row]
-            return cell
-        case collectionViewSimilarMovie:
-            let cell = collectionView.dequeueCell(identifier: PopularFilmCollectionViewCell.identifier, indexPath: indexPath) as PopularFilmCollectionViewCell
-            cell.data = similarMovies?[indexPath.row]
-            return cell
-        default:
-            return UICollectionViewCell()
-        }
-        
-    }
+extension MovieDetailViewController: UICollectionViewDelegateFlowLayout{
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         if collectionView == collectionViewProduction {
             let itemWidth : CGFloat = collectionView.frame.height
             let itemHeight : CGFloat = itemWidth
             return CGSize(width: itemWidth, height: itemHeight)
-        }else if collectionView == collectionViewActors {
+        } else if collectionView == collectionViewActors {
             let itemWidth : CGFloat = 120
             let itemHeight : CGFloat = itemWidth * 1.5
             return CGSize(width: itemWidth, height: itemHeight)
-        }else if collectionView == collectionViewSimilarMovie {
+        } else if collectionView == collectionViewSimilarMovie {
             return CGSize(width: 120, height: collectionView.frame.height)
         }
         return CGSize(width: CGFloat(collectionView.frame.width/2.5), height: CGFloat(200))
     }
     
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if collectionView == collectionViewSimilarMovie {
-            if let movieId = similarMovies?[indexPath.row].id {
-                onTapMovie(id: movieId)
-            }
-        } else if collectionView == collectionViewActors {
-            if let actorId = movieCasts?[indexPath.row].id {
-                navigateToActorDetail(actorId: actorId)
-            }
-        }
+    //    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    //        if collectionView == collectionViewSimilarMovie {
+    //            if let movieId = similarMovies?[indexPath.row].id {
+    //                onTapMovie(id: movieId)
+    //            }
+    //        } else if collectionView == collectionViewActors {
+    //            if let actorId = movieCasts?[indexPath.row].id {
+    //                navigateToActorDetail(actorId: actorId)
+    //            }
+    //        }
+    //    }
+}
+
+extension MovieDetailViewController: ActorActionDelegate {
+    func onTapActor(_ id: Int) {
+        navigateToActorDetail(actorId: id)
+    }
+    
+    func onTapFavorite(isFavorite: Bool) {
+        debugPrint("is Favoriate => \(isFavorite)")
     }
 }

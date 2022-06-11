@@ -57,6 +57,9 @@ class BestActorTableViewCell: UITableViewCell, ActorActionDelegate {
         self.actorDelegate?.onTapMoreActors()
     }
     
+    func onTapActor(_ id: Int) {
+        actorDelegate?.onTapActor(id)
+    }
 }
 
 
@@ -80,7 +83,7 @@ extension BestActorTableViewCell: UICollectionViewDataSource, UICollectionViewDe
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if let id = data?[indexPath.row].id {
-            actorDelegate?.onTapActor(id)
+            self.onTapActor(id)
         }
     }
 }
