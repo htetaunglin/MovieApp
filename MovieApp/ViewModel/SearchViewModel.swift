@@ -16,7 +16,7 @@ class SearchViewModel {
     private var currentPage: Int = 1
     private var totalPage: Int = 2
     
-    let disposeBag: DisposeBag = DisposeBag()
+    private let disposeBag: DisposeBag = DisposeBag()
     
     init(){
         

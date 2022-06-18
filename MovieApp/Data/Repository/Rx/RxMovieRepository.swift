@@ -82,7 +82,7 @@ class RxMovieRepositoryImpl: BaseRepository, RxMovieRepository {
         return coreData.context.rx.entities(fetchRequest: fetchRequest)
             .flatMap{ movies -> Observable<MovieDetailResponse> in
                 return Observable.create{ (observer) -> Disposable in
-//                    debugPrint("Not Found in-> \(movies)")
+                    debugPrint("Not Found in-> \(movies)")
                     if let firstItem = movies.first {
                         observer.onNext(firstItem.toMovieDetailResponse())
                     } else {

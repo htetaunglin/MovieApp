@@ -17,8 +17,8 @@ class RxSeriesModelImpl: BaseModel, RxSeriesModel {
     static let shared: RxSeriesModel = RxSeriesModelImpl()
     private override init() {}
     
-    private let movieRepo: MovieRepository = MovieRepositoryRealmImpl.shared
-    private let movieRxRepo: RxMovieRepository = RxMovieRepositoryRealmImpl.shared
+    private let movieRepo: MovieRepository = MovieRepositoryImpl.shared
+    private let movieRxRepo: RxMovieRepository = RxMovieRepositoryImpl.shared
     
     let disposeBag = DisposeBag()
     

@@ -51,20 +51,10 @@ class MovieDetailViewController: UIViewController, MovieItemDelegate{
     final let disposeBag = DisposeBag()
     
     // MARK: - Properties
-    private let movieDetailModel = MovieDetailModelImpl.shared
-    private let seriesDetailModel = SeriesDetailModelImpl.shared
-    
-    private let rxMovieDetailModel = RxMovieDetailModelImpl.shared
-    private let rxTVSeriesDetailModel = RxSeriesDetailModelImpl.shared
-    
-    let filmDetailPublishSubject: PublishSubject<FilmDetailVo> = PublishSubject()
-    let actorsBehaviorSubject: BehaviorSubject<[ActorInfoResponse]> = BehaviorSubject(value: [])
-    let similarMovieBehaviorSubject: BehaviorSubject<[MovieResult]> = BehaviorSubject(value: [])
-    
     var isTVSeries: Bool = false
     var filmId: Int = -1
     
-    private var movieTrailers: [Trailer]?
+    private var viewModel: MovieDetailViewModel?
     
     // MARK: - Life cycle
     override func viewDidLoad() {
@@ -72,10 +62,9 @@ class MovieDetailViewController: UIViewController, MovieItemDelegate{
         initView()
         registerCollectionViewCells()
         
+        viewModel = MovieDetailViewModel(filmId: filmId, isTVSeries: isTVSeries)
         // Subscribe
         subscribeFilmVo()
-        // Subscribe Movie Detail
-        subscribeMovieDetail()
         // Subscribe Movie Credit (Actors)
         subscribeMovieCredit()
         // Subscribe Movie Similar
@@ -84,68 +73,55 @@ class MovieDetailViewController: UIViewController, MovieItemDelegate{
         subscribeTrailers()
     }
     
-    private func subscribeMovieDetail(){
-        let observable = (isTVSeries ? rxTVSeriesDetailModel.fetchSeriesDetailById(filmId) : rxMovieDetailModel.fetchMovieDetailById(filmId))
-        observable
-            .map{ $0.toFilmDetailVo() }
-            .subscribe(onNext: filmDetailPublishSubject.onNext)
-            .disposed(by: disposeBag)
-    }
-    
     private func subscribeMovieCredit() {
-        RxMovieDetailModelImpl.shared.fetchMovieCreditByMovieId(filmId)
+        viewModel?.actorsBehaviorSubject
             .do(onNext: {[weak self] actors in self?.viewActor.isHidden = actors.isEmpty })
-            .subscribe(onNext: actorsBehaviorSubject.onNext)
-            .disposed(by: disposeBag)
-        
-        actorsBehaviorSubject.bind(to: collectionViewActors.rx.items(cellIdentifier: BestActorCollectionViewCell.identifier, cellType: BestActorCollectionViewCell.self)){[weak self] row, elements, cell in
+            .bind(to: collectionViewActors.rx.items(cellIdentifier: BestActorCollectionViewCell.identifier, cellType: BestActorCollectionViewCell.self)){[weak self] row, elements, cell in
                     cell.data = elements
                     cell.delegate = self
         }.disposed(by: disposeBag)
         
         collectionViewActors.rx.itemSelected.subscribe(onNext: {[weak self] indexPath in
             guard let self = self else { return }
-            if let actorId = (try! self.actorsBehaviorSubject.value())[indexPath.row].id {
+            if let actorId = self.viewModel?.actorsBehaviorSubject.value[indexPath.row].id {
                 self.navigateToActorDetail(actorId: actorId)
             }
         }).disposed(by: disposeBag)
     }
     
     private func subscribeSimilarMovie(){
-        RxMovieDetailModelImpl.shared.fetchMovieSimilar(filmId)
+        viewModel?.similarMovieBehaviorSubject
             .do(onNext: { movies in self.viewSimilarMovie.isHidden = movies.isEmpty })
-            .subscribe(onNext: similarMovieBehaviorSubject.onNext)
-            .disposed(by: disposeBag)
-        
-        similarMovieBehaviorSubject
             .bind(to: collectionViewSimilarMovie.rx.items(cellIdentifier: PopularFilmCollectionViewCell.identifier, cellType: PopularFilmCollectionViewCell.self)){ row, elements, cell in cell.data = elements }
             .disposed(by: disposeBag)
         
         collectionViewSimilarMovie.rx.itemSelected.subscribe(onNext: {[weak self] indexPath in
             guard let self = self else { return }
-            if let movieId = (try! self.similarMovieBehaviorSubject.value())[indexPath.row].id {
+            if let movieId = self.viewModel?.similarMovieBehaviorSubject.value[indexPath.row].id {
                 self.navigateToFilmDetailViewController(movieId: movieId, isTVSeries: false)
             }
         }).disposed(by: disposeBag)
     }
     
-    private func subscribeTrailers(){
-        let observable = isTVSeries ? rxTVSeriesDetailModel.fetchSeriesTrailerVideo(filmId) :rxMovieDetailModel.fetchMovieTrailerVideo(filmId)
-        observable
-            .do(onNext: {[weak self] response in self?.buttonPlayTrailer.isHidden = response.results?.isEmpty ?? true })
-            .subscribe(onNext: {[weak self] value in self?.movieTrailers = value.results })
-            .disposed(by: disposeBag)
+    private func subscribeTrailers() {
+        viewModel?.movieTrailers
+            .subscribe(onNext: {[weak self] value in
+                self?.buttonPlayTrailer.isHidden = value.isEmpty
+            }).disposed(by: disposeBag)
     }
     
     
     private func subscribeFilmVo(){
-        filmDetailPublishSubject
+        viewModel?.filmDetailPublishSubject
             .subscribe(onNext: bindData)
             .disposed(by: disposeBag)
         
-        filmDetailPublishSubject
+        viewModel?.filmDetailPublishSubject
             .map{ $0.productions ?? [] }
             .do(onNext: { self.viewProduction.isHidden = $0.isEmpty })
+            .do(onNext: { vo in
+                print("Production Count View Controller - \(vo.count)")
+            })
             .bind(to: collectionViewProduction.rx.items(cellIdentifier: ProductionCollectionViewCell.identifier, cellType: ProductionCollectionViewCell.self)){ row, element, cell in
                 cell.data = element
             }
@@ -202,7 +178,7 @@ class MovieDetailViewController: UIViewController, MovieItemDelegate{
     
     // MARK: - @IBAction
     @IBAction func onClickPlayTrailer(_ sender: Any) {
-        let youtubeId = movieTrailers?.first?.key
+        let youtubeId = viewModel?.movieTrailers.value.first?.key
         print(youtubeId ?? "NO KEY")
         //        let ytURL = "https://www.youtube.com/watch?v=\(youtubeVideoKey)"
         let playerVC = YoutubePlayerViewController()
