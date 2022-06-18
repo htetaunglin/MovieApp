@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		3B3F7FFE75E85C29CD843407 /* Pods_MovieApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A8E523B7016AF66A2D492CAF /* Pods_MovieApp.framework */; };
+		990530C6285D9B13000747E1 /* MovieViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 990530C5285D9B13000747E1 /* MovieViewModel.swift */; };
 		990FE54D284B1EB70039F7B8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 990FE4BA284B1EB70039F7B8 /* Assets.xcassets */; };
 		990FE54E284B1EB70039F7B8 /* ViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 990FE4BC284B1EB70039F7B8 /* ViewExtension.swift */; };
 		990FE54F284B1EB70039F7B8 /* Router.swift in Sources */ = {isa = PBXBuildFile; fileRef = 990FE4BD284B1EB70039F7B8 /* Router.swift */; };
@@ -122,6 +123,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		990530C5285D9B13000747E1 /* MovieViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieViewModel.swift; sourceTree = "<group>"; };
 		990FE4A2284B1DE90039F7B8 /* MovieApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MovieApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		990FE4B3284B1DEA0039F7B8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		990FE4BA284B1EB70039F7B8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -269,6 +271,14 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
+		990530C4285D9AF8000747E1 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				990530C5285D9B13000747E1 /* MovieViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
 		990FE499284B1DE90039F7B8 = {
 			isa = PBXGroup;
 			children = (
@@ -290,6 +300,7 @@
 		990FE4A4284B1DE90039F7B8 /* MovieApp */ = {
 			isa = PBXGroup;
 			children = (
+				990530C4285D9AF8000747E1 /* ViewModel */,
 				990FE523284B1EB70039F7B8 /* Cells */,
 				990FE54A284B1EB70039F7B8 /* Components */,
 				990FE54C284B1EB70039F7B8 /* Constants.swift */,
@@ -957,6 +968,7 @@
 				990FE550284B1EB70039F7B8 /* MovieViewController.swift in Sources */,
 				990FE5A5284B1EB70039F7B8 /* PopularFilmCollectionViewCell.swift in Sources */,
 				990FE585284B1EB70039F7B8 /* ActorModel.swift in Sources */,
+				990530C6285D9B13000747E1 /* MovieViewModel.swift in Sources */,
 				990FE560284B1EB70039F7B8 /* ActorDelegate.swift in Sources */,
 				990FE58A284B1EB70039F7B8 /* SeriesDetailModel.swift in Sources */,
 				990FE587284B1EB70039F7B8 /* RxSearchModel.swift in Sources */,

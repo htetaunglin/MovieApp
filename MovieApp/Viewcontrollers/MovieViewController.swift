@@ -21,8 +21,8 @@ class MovieViewController: UIViewController {
     private let actorModel = ActorModelImpl.shared
     private let genreModel = GenreModelImpl.shared
     
-    // MARK: - Rx Property
-    private let rxMovieModel = RxMovieModelImpl.shared
+    // MARK: - ViewModel
+    private let movieViewModel: MovieViewModel = MovieViewModel()
     
     
     private var upComingMovieList: [MovieResult]?
@@ -34,37 +34,17 @@ class MovieViewController: UIViewController {
     
     let disposeBag = DisposeBag()
     
-    let observableUpcomingMovies = RxMovieModelImpl.shared.getUpcomingMovieList()
-    let observablePopularMovies = RxMovieModelImpl.shared.getPopularMovieList()
-    let observablePopularSeries = RxSeriesModelImpl.shared.getPopularSeriesList()
-    let observableTopRelateMovies = RxMovieModelImpl.shared.getTopRelatedMovieList(page: 1)
-    let observablePopularActors = RxActorModelImpl.shared.subscribePopularActor()
-    
     // MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
         registerTableViewCell()
-        //        fetchUpcomingMovieList() ✅
-        //        fetchPopularMovieList() ✅
-        //        fetchPopularSeriesList() ✅
-        //        fetchMovieGenreList()
-        //        fetchTopRelatedMovieList() <- Show case ✅
-        //        fetchPopularPeople() ✅
-        RxActorModelImpl.shared.getPopularActor(page: 1)
         navigationItem.backButtonTitle = ""
         
         let dataSource = initDataSource()
-        Observable.combineLatest(observableUpcomingMovies, observablePopularMovies,observablePopularSeries,observableTopRelateMovies, observablePopularActors)
-            .flatMap{ (upComingMovies, popularMovies, popularSeries, topRelatedMovies, popularActors) -> Observable<[HomeMovieSectionModel]> in
-                    .just([
-                        HomeMovieSectionModel.movieResult(items: [.upComingMovieSection(items: upComingMovies)]),
-                        HomeMovieSectionModel.movieResult(items: [.popularMovieSection(items: popularMovies)]),
-                        HomeMovieSectionModel.movieResult(items: [.popularSeriesSection(items: popularSeries)]),
-                        HomeMovieSectionModel.movieResult(items: [.movieShowTimeSection]),
-                        HomeMovieSectionModel.movieResult(items: [.showcaseMovieSection(items: topRelatedMovies)]),
-                        HomeMovieSectionModel.actorResult(items: [.bestActorSection(items: popularActors)])
-                    ])
-            }.bind(to: tableViewMovie.rx.items(dataSource: dataSource))
+        
+        movieViewModel.fetchAllData()
+        movieViewModel.homeItemList
+            .bind(to: tableViewMovie.rx.items(dataSource: dataSource))
             .disposed(by: disposeBag)
     }
     
