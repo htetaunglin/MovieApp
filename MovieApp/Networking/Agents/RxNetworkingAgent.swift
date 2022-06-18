@@ -88,4 +88,22 @@ class RxNetworkingAgent : RxNetworkingAgentProtocol {
             .requestDecodable(MDBEndpoint.tvTrailer(id))
             .flatMap{ Observable.just($0.1) }
     }
+    
+    func getActorDetail(_ id: Int) -> Observable<ActorDetailResponse> {
+        return RxAlamofire
+            .requestDecodable(MDBEndpoint.actorDetail(id))
+            .flatMap{ Observable.just($0.1) }
+    }
+    
+    func getActorTVCredit(_ id: Int) -> Observable<CastTVCreditResponse> {
+        return RxAlamofire
+            .requestDecodable(MDBEndpoint.actorTVCredit(id))
+            .flatMap{ Observable.just($0.1) }
+    }
+    
+    func getActorMovieCredit(_ id: Int) -> Observable<ActorMovieCreditResponse> {
+        return RxAlamofire
+            .requestDecodable(MDBEndpoint.actorMovieCredit(id))
+            .flatMap{ Observable.just($0.1) }
+    }
 }

@@ -6,6 +6,8 @@
 //
 
 import UIKit
+import RxSwift
+import RxCocoa
 
 class ActorDetailViewController: UIViewController {
     
@@ -26,6 +28,7 @@ class ActorDetailViewController: UIViewController {
     
     // MARK: Property
     private var actorDetailModel = ActorDetailModelImpl.shared
+    private let rxActorDetailModel = RxActorDetailModelImpl.shared
     
     var id: Int?
     
@@ -33,13 +36,18 @@ class ActorDetailViewController: UIViewController {
     private var tvSeries: [MovieResult] = []
     private var actorDetail: ActorDetailResponse?
     
+    let movieBehaviorSubject: BehaviorSubject<[MovieResult]> = BehaviorSubject(value: [])
+    let tvBehaviorSubject: BehaviorSubject<[MovieResult]> = BehaviorSubject(value: [])
+    final let disposeBag = DisposeBag()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         initView()
         addGesture()
         registerCollectionView()
         if let id = id {
-            fetchActorDetail(id)
+//            fetchActorDetail(id)
+            subscribeActorDetail(id)
             fetchActorMovieCredit(id)
             fetchActorTVCredit(id)
         }
@@ -96,6 +104,64 @@ class ActorDetailViewController: UIViewController {
         if let url = URL(string: google + (actorName.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!)), UIApplication.shared.canOpenURL(url) {
             UIApplication.shared.open(url)
         }
+    }
+    // MARK: Reactive Subscription
+    private func subscribeActorDetail(_ id: Int){
+        rxActorDetailModel.getActorDetail(id)
+            .subscribe(onNext:{[weak self] detailResponse in
+                self?.actorDetail = detailResponse
+                self?.bindData(detailResponse)
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    private func subscribeActorMovieCredit(_ id: Int){
+        rxActorDetailModel.getActorMovieCredit(id)
+            .subscribe(onNext: movieBehaviorSubject.onNext)
+            .disposed(by: disposeBag)
+
+        movieBehaviorSubject
+            .do(onNext: {[weak self] movies in
+                self?.movieCreditView.isHidden = movies.isEmpty
+            })
+            .bind(to: collectionViewMovieCredit.rx
+                .items(cellIdentifier: PopularFilmCollectionViewCell.identifier, cellType: PopularFilmCollectionViewCell.self)){ row, element, cell in
+                    cell.data = element
+            }
+            .disposed(by: disposeBag)
+
+        collectionViewMovieCredit.rx.itemSelected.subscribe(onNext: {[weak self] indexPath in
+            guard let self = self else { return }
+            if let actorId = (try! self.movieBehaviorSubject.value())[indexPath.row].id {
+                self.navigateToActorDetail(actorId: actorId)
+            }
+        })
+        .disposed(by: disposeBag)
+    }
+    
+    
+    private func subscribeActorTVCredit(_ id: Int){
+        rxActorDetailModel.getActorTVCredit(id)
+            .subscribe(onNext: tvBehaviorSubject.onNext)
+            .disposed(by: disposeBag)
+
+        tvBehaviorSubject
+            .do(onNext: {[weak self] movies in
+                self?.tvCreditView.isHidden = movies.isEmpty
+            })
+            .bind(to: collectionViewTVCredit.rx
+                .items(cellIdentifier: PopularFilmCollectionViewCell.identifier, cellType: PopularFilmCollectionViewCell.self)){ row, element, cell in
+                    cell.data = element
+            }
+            .disposed(by: disposeBag)
+
+        collectionViewTVCredit.rx.itemSelected.subscribe(onNext: {[weak self] indexPath in
+            guard let self = self else { return }
+            if let actorId = (try! self.tvBehaviorSubject.value())[indexPath.row].id {
+                self.navigateToActorDetail(actorId: actorId)
+            }
+        })
+        .disposed(by: disposeBag)
     }
     
     // MARK: Request API

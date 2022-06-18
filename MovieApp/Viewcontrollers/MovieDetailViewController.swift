@@ -94,16 +94,17 @@ class MovieDetailViewController: UIViewController, MovieItemDelegate{
     
     private func subscribeMovieCredit() {
         RxMovieDetailModelImpl.shared.fetchMovieCreditByMovieId(filmId)
-            .do(onNext: { actors in self.viewActor.isHidden = actors.isEmpty })
+            .do(onNext: {[weak self] actors in self?.viewActor.isHidden = actors.isEmpty })
             .subscribe(onNext: actorsBehaviorSubject.onNext)
             .disposed(by: disposeBag)
         
-        actorsBehaviorSubject.bind(to: collectionViewActors.rx.items(cellIdentifier: BestActorCollectionViewCell.identifier, cellType: BestActorCollectionViewCell.self)){ row, elements, cell in
+        actorsBehaviorSubject.bind(to: collectionViewActors.rx.items(cellIdentifier: BestActorCollectionViewCell.identifier, cellType: BestActorCollectionViewCell.self)){[weak self] row, elements, cell in
                     cell.data = elements
                     cell.delegate = self
         }.disposed(by: disposeBag)
         
-        collectionViewActors.rx.itemSelected.subscribe(onNext: { indexPath in
+        collectionViewActors.rx.itemSelected.subscribe(onNext: {[weak self] indexPath in
+            guard let self = self else { return }
             if let actorId = (try! self.actorsBehaviorSubject.value())[indexPath.row].id {
                 self.navigateToActorDetail(actorId: actorId)
             }
@@ -120,7 +121,8 @@ class MovieDetailViewController: UIViewController, MovieItemDelegate{
             .bind(to: collectionViewSimilarMovie.rx.items(cellIdentifier: PopularFilmCollectionViewCell.identifier, cellType: PopularFilmCollectionViewCell.self)){ row, elements, cell in cell.data = elements }
             .disposed(by: disposeBag)
         
-        collectionViewSimilarMovie.rx.itemSelected.subscribe(onNext: { indexPath in
+        collectionViewSimilarMovie.rx.itemSelected.subscribe(onNext: {[weak self] indexPath in
+            guard let self = self else { return }
             if let movieId = (try! self.similarMovieBehaviorSubject.value())[indexPath.row].id {
                 self.navigateToFilmDetailViewController(movieId: movieId, isTVSeries: false)
             }
@@ -130,8 +132,8 @@ class MovieDetailViewController: UIViewController, MovieItemDelegate{
     private func subscribeTrailers(){
         let observable = isTVSeries ? rxTVSeriesDetailModel.fetchSeriesTrailerVideo(filmId) :rxMovieDetailModel.fetchMovieTrailerVideo(filmId)
         observable
-            .do(onNext: { response in self.buttonPlayTrailer.isHidden = response.results?.isEmpty ?? true })
-            .subscribe(onNext: { self.movieTrailers = $0.results })
+            .do(onNext: {[weak self] response in self?.buttonPlayTrailer.isHidden = response.results?.isEmpty ?? true })
+            .subscribe(onNext: {[weak self] value in self?.movieTrailers = value.results })
             .disposed(by: disposeBag)
     }
     

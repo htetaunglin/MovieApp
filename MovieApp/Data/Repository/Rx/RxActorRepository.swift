@@ -13,19 +13,8 @@ import CoreData
 
 protocol RxActorRepository {
     func getPopularActors() -> Observable<[ActorInfoResponse]>
-}
-
-
-class RxActorRepositoryRealmImpl: BaseRepository, RxActorRepository {
-    static let shared : RxActorRepository = RxActorRepositoryRealmImpl()
-    private override init() {}
-    
-    func getPopularActors() -> Observable<[ActorInfoResponse]> {
-        let actorObjs = realDB.objects(ActorObject.self)
-            .sorted(byKeyPath: "popularity", ascending: false)
-        return Observable.collection(from: actorObjs)
-            .map{ $0.map{ $0.toActorInfoResponse()}}
-    }
+    func getDetails(id: Int) -> Observable<ActorDetailResponse?>
+    func saveDetails(data: ActorDetailResponse)
 }
 
 class RxActorRepositoryImpl: BaseRepository, RxActorRepository {
@@ -37,5 +26,22 @@ class RxActorRepositoryImpl: BaseRepository, RxActorRepository {
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "popularity", ascending: false)]
         return coreData.context.rx.entities(fetchRequest: fetchRequest)
             .map{ $0.map{ $0.toActorInfoResponse()}}
+    }
+    
+    func getDetails(id: Int) -> Observable<ActorDetailResponse?> {
+        let fetchRequest : NSFetchRequest<ActorEntity> = ActorEntity.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "%K = %@", "id", "\(id)")
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "popularity", ascending: false)]
+        return coreData.context.rx.entities(fetchRequest: fetchRequest)
+            .do(onNext: { value in
+                debugPrint("Local \(value.count)")
+            })
+            .map{ $0.first?.toActorDetailResponse() }
+    }
+    
+    func saveDetails(data: ActorDetailResponse) {
+//        CDObservable(fetchRequest: <#T##NSFetchRequest<NSManagedObject>#>, context: <#T##NSManagedObjectContext#>)
+//        data.toActorEntity(context: coreData.context)?.rx.
+//        coreData.context.rx.update(data.toActorEntity(context: coreData.context)?.entity.rx)
     }
 }

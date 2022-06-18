@@ -7,6 +7,7 @@
 
 import Foundation
 import CoreData
+import RxCoreData
 
 class CoreDataStack {
     static let shared = CoreDataStack()
