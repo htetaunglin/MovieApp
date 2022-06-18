@@ -15,15 +15,9 @@ class SearchViewController: UIViewController, UITextFieldDelegate, UISearchBarDe
     
     private let searchBar: UISearchBar = UISearchBar()
     
-    private let rxSearchModel = RxSearchModelImpl.shared
-    
-    private var data: [MovieResult] = []
-    private var currentPage: Int = 1
-    private var totalPage: Int = 2
+    private let searchViewModel: SearchViewModel = SearchViewModel()
     
     let disposeBag: DisposeBag = DisposeBag()
-    
-    let searchResultItems: BehaviorSubject<[MovieResult]> = BehaviorSubject(value: [])
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -51,20 +45,7 @@ class SearchViewController: UIViewController, UITextFieldDelegate, UISearchBarDe
     }
     
     private func rxSearchMovie(searchText: String?, page: Int = 1) {
-        rxSearchModel.searchMovie(searchText ?? "", page: page)
-            .do (onNext: { response in
-                self.totalPage = response.totalPages ?? self.totalPage
-            })
-            .compactMap{ $0.results }
-            .subscribe(onNext: { item in
-                if page == 1 {
-                    self.searchResultItems.onNext(item)
-                } else {
-                    self.searchResultItems.onNext(try! self.searchResultItems.value() + item)
-                }
-            })
-            .disposed(by: disposeBag)
-
+        searchViewModel.searchMovies(searchText: searchText ?? "", page: page)
     }
 }
 
@@ -80,23 +61,14 @@ extension SearchViewController: UICollectionViewDelegateFlowLayout{
 extension SearchViewController {
     private func addSearchBarObserver() {
         searchBar.rx.text.orEmpty
-//            .throttle(.milliseconds(1000), scheduler: MainScheduler.instance)
             .debounce(.milliseconds(500), scheduler: MainScheduler.instance)
             .do(onNext: { print($0) })
-            .subscribe (onNext: { value in
-                if value.isEmpty {
-                    self.totalPage = 1
-                    self.currentPage = 1
-                    self.searchResultItems.onNext([])
-                } else {
-                    self.rxSearchMovie(searchText: value, page: self.currentPage)
-                }
-            })
+            .subscribe (onNext: searchViewModel.handleSearchInput)
             .disposed(by: disposeBag)
     }
     
     private func addCollectionViewBindingObserver() {
-        searchResultItems.bind(to: collectionViewMovies.rx
+        searchViewModel.searchResultItems.bind(to: collectionViewMovies.rx
                 .items(cellIdentifier: PopularFilmCollectionViewCell.identifier, cellType: PopularFilmCollectionViewCell.self)){ (row, element, cell) in
                     cell.data = element
                 }.disposed(by: disposeBag)
@@ -105,19 +77,14 @@ extension SearchViewController {
     private func addPaginationObserver(){
         Observable.combineLatest(collectionViewMovies.rx
             .willDisplayCell, searchBar.rx.text.orEmpty)
-        .subscribe(onNext:{ (cellTuple, searchText) in
-            let totalItems = try! self.searchResultItems.value().count
-            let isAtLastRow = cellTuple.at.row == (totalItems - 1)
-            let hasMoreMovie = self.currentPage < self.totalPage
-            if isAtLastRow && hasMoreMovie {
-                self.rxSearchMovie(searchText: searchText, page: self.currentPage + 1)
-            }
+        .subscribe(onNext:{[weak self] (cellTuple, searchText) in
+            self?.searchViewModel.handlePagination(indexPath: cellTuple.at, searchText: searchText)
         }).disposed(by: disposeBag)
     }
     
     private func addItemSelectedObserver(){
         collectionViewMovies.rx.itemSelected.subscribe(onNext: { indexPath in
-            let items = try! self.searchResultItems.value()
+            let items = try! self.searchViewModel.searchResultItems.value()
             if let movieId = items[indexPath.row].id {
                 self.navigateToFilmDetailViewController(movieId: movieId, isTVSeries: false)
             }
