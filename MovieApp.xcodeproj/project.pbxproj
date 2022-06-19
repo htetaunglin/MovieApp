@@ -121,6 +121,7 @@
 		9961A2D428546DF400DC6242 /* RxActorDetailModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9961A2D328546DF400DC6242 /* RxActorDetailModel.swift */; };
 		9961A2D72854861C00DC6242 /* CDObservable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9961A2D62854861C00DC6242 /* CDObservable.swift */; };
 		99B049FA285EF51300E6FEC7 /* ActorDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99B049F9285EF51300E6FEC7 /* ActorDetailViewModel.swift */; };
+		99B049FC285EFAAF00E6FEC7 /* MoreActorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99B049FB285EFAAF00E6FEC7 /* MoreActorViewModel.swift */; };
 		99FAC8F1284F072200EC907D /* RxMovieDetailModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99FAC8F0284F072200EC907D /* RxMovieDetailModel.swift */; };
 		99FAC8F3284F838D00EC907D /* RxSeriesDetailModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99FAC8F2284F838D00EC907D /* RxSeriesDetailModel.swift */; };
 /* End PBXBuildFile section */
@@ -241,6 +242,7 @@
 		9961A2D328546DF400DC6242 /* RxActorDetailModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RxActorDetailModel.swift; sourceTree = "<group>"; };
 		9961A2D62854861C00DC6242 /* CDObservable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CDObservable.swift; sourceTree = "<group>"; };
 		99B049F9285EF51300E6FEC7 /* ActorDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActorDetailViewModel.swift; sourceTree = "<group>"; };
+		99B049FB285EFAAF00E6FEC7 /* MoreActorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoreActorViewModel.swift; sourceTree = "<group>"; };
 		99FAC8F0284F072200EC907D /* RxMovieDetailModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RxMovieDetailModel.swift; sourceTree = "<group>"; };
 		99FAC8F2284F838D00EC907D /* RxSeriesDetailModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RxSeriesDetailModel.swift; sourceTree = "<group>"; };
 		A7431C05D6A7AD89BA469C0C /* Pods-MovieApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MovieApp.release.xcconfig"; path = "Target Support Files/Pods-MovieApp/Pods-MovieApp.release.xcconfig"; sourceTree = "<group>"; };
@@ -284,6 +286,7 @@
 				990530C7285DAC44000747E1 /* SearchViewModel.swift */,
 				990530C9285DB09D000747E1 /* MovieDetailViewModel.swift */,
 				99B049F9285EF51300E6FEC7 /* ActorDetailViewModel.swift */,
+				99B049FB285EFAAF00E6FEC7 /* MoreActorViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -985,6 +988,7 @@
 				990FE58A284B1EB70039F7B8 /* SeriesDetailModel.swift in Sources */,
 				990FE587284B1EB70039F7B8 /* RxSearchModel.swift in Sources */,
 				990FE58E284B1EB70039F7B8 /* ProductionCompanyObject.swift in Sources */,
+				99B049FC285EFAAF00E6FEC7 /* MoreActorViewModel.swift in Sources */,
 				990FE586284B1EB70039F7B8 /* RxMovieModel.swift in Sources */,
 				990FE5A0284B1EB70039F7B8 /* MovieShowTimeTableViewCell.swift in Sources */,
 				990FE56F284B1EB70039F7B8 /* TVSeriesDetailResponse.swift in Sources */,

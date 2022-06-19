@@ -13,19 +13,17 @@ class MoreActorsViewController: UIViewController {
     
     @IBOutlet weak var actorCollectionView: UICollectionView!
     
+    let viewModel: MoreActorViewModel = MoreActorViewModel()
+    
     var initData : [ActorInfoResponse]? {
         didSet {
             if let results = initData {
-                actorResults.onNext(results)
+                viewModel.actorResults.accept(results)
             }
         }
     }
     
     let disposeBag: DisposeBag = DisposeBag()
-    let actorResults: BehaviorSubject<[ActorInfoResponse]> = BehaviorSubject(value: [])
-    
-    private let actorModel = ActorModelImpl.shared
-    private let rxActorModel = RxActorModelImpl.shared
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -34,17 +32,10 @@ class MoreActorsViewController: UIViewController {
     }
     
     private func loadSubscription(){
-        subscribeActors()
         addCollectionViewBindingObserver()
         addCollectionViewPagingObserver()
     }
-    
-    private func subscribeActors(){
-        RxActorModelImpl.shared.subscribePopularActor()
-            .subscribe(onNext: self.actorResults.onNext)
-            .disposed(by: disposeBag)
-    }
-    
+
     private func registerCollectionView(){
         actorCollectionView.delegate = self
         actorCollectionView.registerForCell(identifier: BestActorCollectionViewCell.identifier)
@@ -52,7 +43,7 @@ class MoreActorsViewController: UIViewController {
     
     
     private func addCollectionViewBindingObserver() {
-        self.actorResults.bind(to: actorCollectionView.rx.items(cellIdentifier: BestActorCollectionViewCell.identifier, cellType: BestActorCollectionViewCell.self)) { (row, element, cell) in
+        viewModel.actorResults.bind(to: actorCollectionView.rx.items(cellIdentifier: BestActorCollectionViewCell.identifier, cellType: BestActorCollectionViewCell.self)) { (row, element, cell) in
             cell.data = element
         }.disposed(by: disposeBag)
     }
@@ -61,7 +52,7 @@ class MoreActorsViewController: UIViewController {
     private func addCollectionViewPagingObserver(){
         actorCollectionView.rx.willDisplayCell
             .subscribe(onNext: { [weak self] value in
-                let itemCount = (try! self?.actorResults.value().count ?? 1)
+                let itemCount = self?.viewModel.actorResults.value.count ?? 0
                 let isAtLastRow = value.at.row == (itemCount - 1)
                 if(isAtLastRow) {
                     self?.fetchActors(page: (itemCount / 20) + 1)
@@ -70,7 +61,7 @@ class MoreActorsViewController: UIViewController {
     }
     
     private func fetchActors(page: Int){
-        rxActorModel.getPopularActor(page: page)
+        viewModel.fetchActors(page: page)
     }
 }
 
