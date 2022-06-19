@@ -27,18 +27,11 @@ class ActorDetailViewController: UIViewController {
     @IBOutlet weak var lblShowMore: UILabel!
     
     // MARK: Property
-    private var actorDetailModel = ActorDetailModelImpl.shared
-    private let rxActorDetailModel = RxActorDetailModelImpl.shared
-    
     var id: Int?
     
-    private var movies: [MovieResult] = []
-    private var tvSeries: [MovieResult] = []
-    private var actorDetail: ActorDetailResponse?
-    
-    let movieBehaviorSubject: BehaviorSubject<[MovieResult]> = BehaviorSubject(value: [])
-    let tvBehaviorSubject: BehaviorSubject<[MovieResult]> = BehaviorSubject(value: [])
     final let disposeBag = DisposeBag()
+    
+    var viewModel: ActorDetailViewModel?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -46,10 +39,8 @@ class ActorDetailViewController: UIViewController {
         addGesture()
         registerCollectionView()
         if let id = id {
-//            fetchActorDetail(id)
-            subscribeActorDetail(id)
-            fetchActorMovieCredit(id)
-            fetchActorTVCredit(id)
+            viewModel = ActorDetailViewModel(id)
+            subscribeActor()
         }
     }
     
@@ -88,11 +79,9 @@ class ActorDetailViewController: UIViewController {
     
     // MARK: Register Collection view
     private func registerCollectionView(){
-        collectionViewMovieCredit.dataSource = self
         collectionViewMovieCredit.delegate = self
         collectionViewMovieCredit.registerForCell(identifier: PopularFilmCollectionViewCell.identifier)
         
-        collectionViewTVCredit.dataSource = self
         collectionViewTVCredit.delegate = self
         collectionViewTVCredit.registerForCell(identifier: PopularFilmCollectionViewCell.identifier)
     }
@@ -100,27 +89,23 @@ class ActorDetailViewController: UIViewController {
     // MARK: Read More
     @IBAction func btnReadMore(_ sender: Any) {
         let google = "https://www.google.com/search?q="
-        let actorName: String = actorDetail?.name ?? ""
+        let actorName: String = viewModel?.actor.value?.name ?? ""
         if let url = URL(string: google + (actorName.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!)), UIApplication.shared.canOpenURL(url) {
             UIApplication.shared.open(url)
         }
     }
     // MARK: Reactive Subscription
-    private func subscribeActorDetail(_ id: Int){
-        rxActorDetailModel.getActorDetail(id)
-            .subscribe(onNext:{[weak self] detailResponse in
-                self?.actorDetail = detailResponse
+    private func subscribeActor(){
+        viewModel?.actor
+            .compactMap{ $0 }
+            .subscribe(onNext: {[weak self] detailResponse in
                 self?.bindData(detailResponse)
             })
             .disposed(by: disposeBag)
-    }
-    
-    private func subscribeActorMovieCredit(_ id: Int){
-        rxActorDetailModel.getActorMovieCredit(id)
-            .subscribe(onNext: movieBehaviorSubject.onNext)
-            .disposed(by: disposeBag)
-
-        movieBehaviorSubject
+      
+        
+        // Movie
+        viewModel?.movieBehaviorSubject
             .do(onNext: {[weak self] movies in
                 self?.movieCreditView.isHidden = movies.isEmpty
             })
@@ -129,120 +114,39 @@ class ActorDetailViewController: UIViewController {
                     cell.data = element
             }
             .disposed(by: disposeBag)
-
+        
         collectionViewMovieCredit.rx.itemSelected.subscribe(onNext: {[weak self] indexPath in
             guard let self = self else { return }
-            if let actorId = (try! self.movieBehaviorSubject.value())[indexPath.row].id {
-                self.navigateToActorDetail(actorId: actorId)
+            if let movieId = self.viewModel?.movieBehaviorSubject.value[indexPath.row].id {
+                self.navigateToFilmDetailViewController(movieId: movieId, isTVSeries: false)
             }
         })
         .disposed(by: disposeBag)
-    }
-    
-    
-    private func subscribeActorTVCredit(_ id: Int){
-        rxActorDetailModel.getActorTVCredit(id)
-            .subscribe(onNext: tvBehaviorSubject.onNext)
-            .disposed(by: disposeBag)
-
-        tvBehaviorSubject
-            .do(onNext: {[weak self] movies in
-                self?.tvCreditView.isHidden = movies.isEmpty
+        
+        // Series
+        viewModel?.tvBehaviorSubject
+            .do(onNext: {[weak self] series in
+                self?.tvCreditView.isHidden = series.isEmpty
             })
             .bind(to: collectionViewTVCredit.rx
                 .items(cellIdentifier: PopularFilmCollectionViewCell.identifier, cellType: PopularFilmCollectionViewCell.self)){ row, element, cell in
                     cell.data = element
             }
             .disposed(by: disposeBag)
-
+        
         collectionViewTVCredit.rx.itemSelected.subscribe(onNext: {[weak self] indexPath in
             guard let self = self else { return }
-            if let actorId = (try! self.tvBehaviorSubject.value())[indexPath.row].id {
-                self.navigateToActorDetail(actorId: actorId)
+            if let movieId = self.viewModel?.tvBehaviorSubject.value[indexPath.row].id {
+                self.navigateToFilmDetailViewController(movieId: movieId, isTVSeries: true)
             }
         })
         .disposed(by: disposeBag)
     }
-    
-    // MARK: Request API
-    private func fetchActorDetail(_ id: Int){
-        actorDetailModel.getActorDetail(id){[weak self] response in
-            guard let self = self else { return }
-            switch response {
-            case .success(let detailResponse):
-                self.actorDetail = detailResponse
-                self.bindData(detailResponse)
-            case .failure(let error):
-                debugPrint(error)
-            }
-        }
-    }
-    
-    private func fetchActorMovieCredit(_ id: Int){
-        actorDetailModel.getActorMovieCredit(id){[weak self] response in
-            guard let self = self else { return }
-            switch response {
-            case .success(let actorMovieCredits):
-                self.movieCreditView.isHidden = actorMovieCredits.isEmpty
-                self.movies = actorMovieCredits
-                self.collectionViewMovieCredit.reloadData()
-            case .failure(let error):
-                debugPrint(error)
-            }
-        }
-    }
-    
-    private func fetchActorTVCredit(_ id: Int){
-        actorDetailModel.getActorTVCredit(id){[weak self] response in
-            guard let self = self else { return }
-            switch response {
-            case .success(let actorTVCredits):
-                self.tvCreditView.isHidden = actorTVCredits.isEmpty
-                self.tvSeries = actorTVCredits
-                print(self.tvSeries.count)
-                print(actorTVCredits.count)
-                self.collectionViewTVCredit.reloadData()
-            case .failure(let error):
-                debugPrint(error)
-            }
-        }
-    }
 }
 
 // MARK: CollectionViewX
-extension ActorDetailViewController : UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if collectionView == collectionViewMovieCredit {
-            return movies.count
-        } else if collectionView == collectionViewTVCredit {
-            return tvSeries.count
-        }
-        return 0
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        if collectionView == collectionViewMovieCredit {
-            let cell = collectionView.dequeueCell(identifier: PopularFilmCollectionViewCell.identifier, indexPath: indexPath) as PopularFilmCollectionViewCell
-            cell.data = movies[indexPath.row]
-            return cell
-        } else if collectionView == collectionViewTVCredit {
-            let cell = collectionView.dequeueCell(identifier: PopularFilmCollectionViewCell.identifier, indexPath: indexPath) as PopularFilmCollectionViewCell
-            cell.data = tvSeries[indexPath.row]
-            return cell
-        } else {
-            return UICollectionViewCell()
-        }
-    }
-    
+extension ActorDetailViewController : UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: 120, height: collectionView.frame.height)
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if collectionView == collectionViewMovieCredit {
-            navigateToFilmDetailViewController(movieId: movies[indexPath.row].id ?? 0, isTVSeries: false)
-        } else if collectionView == collectionViewTVCredit {
-            navigateToFilmDetailViewController(movieId: tvSeries[indexPath.row].id ?? 0, isTVSeries: true)
-        }
     }
 }

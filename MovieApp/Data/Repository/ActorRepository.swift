@@ -145,8 +145,11 @@ class ActorRepositoryImpl: BaseRepository, ActorRepository {
     }
     
     func saveDetails(data: ActorDetailResponse) {
-        var _ = data.toActorEntity(context: coreData.context)
-        coreData.saveContext()
+        coreData.context.perform{
+            let entity = data.toActorEntity(context: self.coreData.context)
+            debugPrint("Save Actor \(entity?.id ?? -1)")
+            self.coreData.saveContext()
+        }
     }
     
     func getDetails(id: Int, completion: @escaping (ActorDetailResponse?) -> Void) {

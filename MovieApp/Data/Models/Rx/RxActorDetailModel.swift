@@ -30,13 +30,11 @@ class RxActorDetailModelImpl: BaseModel, RxActorDetailModel {
                 debugPrint(value.name ?? "-- no name --")
             })
             .subscribe(onNext: {[weak self] response in
+                debugPrint("Save \(response.id ?? -1) \(response.name ?? "-- no name --")")
                 self?.actorRepo.saveDetails(data: response)
             })
             .disposed(by: disposeBag)
         return rxActorRepo.getDetails(id: id).compactMap{ $0 }
-            .do(onNext: { value in
-                debugPrint("Local \(value.name ?? "-- no name --")")
-            })
     }
     
     func getActorMovieCredit(_ id: Int) -> Observable<[MovieResult]> {
@@ -48,7 +46,7 @@ class RxActorDetailModelImpl: BaseModel, RxActorDetailModel {
                 self?.actorRepo.saveMoviesByActor(id, list: response.cast?.map{ $0.toMovieResult() } ?? [])
             })
             .disposed(by: disposeBag)
-        return Observable.empty()
+        return rxActorRepo.getMovieCredit(id: id, isTVSeries: false)
     }
     
     func getActorTVCredit(_ id: Int) -> Observable<[MovieResult]> {
@@ -57,7 +55,7 @@ class RxActorDetailModelImpl: BaseModel, RxActorDetailModel {
                 self?.actorRepo.saveMoviesByActor(id, list: response.cast?.map{ $0.toMovieResult() } ?? [])
             })
             .disposed(by: disposeBag)
-        return Observable.empty()
+        return rxActorRepo.getMovieCredit(id: id, isTVSeries: true)
     }
     
 }

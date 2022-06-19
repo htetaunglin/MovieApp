@@ -14,10 +14,11 @@ import CoreData
 protocol RxActorRepository {
     func getPopularActors() -> Observable<[ActorInfoResponse]>
     func getDetails(id: Int) -> Observable<ActorDetailResponse?>
-    func saveDetails(data: ActorDetailResponse)
+    func getMovieCredit(id: Int, isTVSeries: Bool) -> Observable<[MovieResult]>
 }
 
 class RxActorRepositoryImpl: BaseRepository, RxActorRepository {
+    
     static let shared : RxActorRepository = RxActorRepositoryImpl()
     private override init() {}
     
@@ -31,17 +32,33 @@ class RxActorRepositoryImpl: BaseRepository, RxActorRepository {
     func getDetails(id: Int) -> Observable<ActorDetailResponse?> {
         let fetchRequest : NSFetchRequest<ActorEntity> = ActorEntity.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "%K = %@", "id", "\(id)")
-        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "popularity", ascending: false)]
+        fetchRequest.sortDescriptors = [
+            NSSortDescriptor(key: "popularity", ascending: false)
+        ]
         return coreData.context.rx.entities(fetchRequest: fetchRequest)
             .do(onNext: { value in
-                debugPrint("Local \(value.count)")
+                debugPrint("Rx Local - \(value.count)")
             })
             .map{ $0.first?.toActorDetailResponse() }
     }
     
-    func saveDetails(data: ActorDetailResponse) {
-//        CDObservable(fetchRequest: <#T##NSFetchRequest<NSManagedObject>#>, context: <#T##NSManagedObjectContext#>)
-//        data.toActorEntity(context: coreData.context)?.rx.
-//        coreData.context.rx.update(data.toActorEntity(context: coreData.context)?.entity.rx)
+    func getMovieCredit(id: Int, isTVSeries: Bool) -> Observable<[MovieResult]> {
+        let fetchRequest : NSFetchRequest<ActorEntity> = ActorEntity.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "%K = %@", "id", "\(id)")
+        fetchRequest.sortDescriptors = [
+            NSSortDescriptor(key: "popularity", ascending: false)
+        ]
+        return coreData.context.rx.entities(fetchRequest: fetchRequest)
+            .do(onNext: { value in
+                debugPrint("Rx Local - \(value.count)")
+            })
+            .map{ items in
+                if let firstItem = items.first {
+                    let movieEntities = firstItem.credits?.allObjects as? [MovieEntity] ?? [MovieEntity]()
+                    return movieEntities.map{ $0.toMovieResult() }.filter{ $0.video == isTVSeries }
+                } else {
+                    return [MovieResult]()
+                }
+            }
     }
 }
