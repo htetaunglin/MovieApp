@@ -34,6 +34,7 @@ class MoreActorsViewController: UIViewController {
     private func loadSubscription(){
         addCollectionViewBindingObserver()
         addCollectionViewPagingObserver()
+        addItemSelectedObserver()
     }
 
     private func registerCollectionView(){
@@ -58,6 +59,15 @@ class MoreActorsViewController: UIViewController {
                     self?.fetchActors(page: (itemCount / 20) + 1)
                 }
             }).disposed(by: disposeBag)
+    }
+    
+    private func addItemSelectedObserver(){
+        actorCollectionView.rx.itemSelected.subscribe(onNext: {[weak self] indexPath in
+            let items = self?.viewModel.actorResults.value
+            if let actorId = items?[indexPath.row].id {
+                self?.navigateToActorDetail(actorId: actorId)
+            }
+        }).disposed(by: disposeBag)
     }
     
     private func fetchActors(page: Int){
