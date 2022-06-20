@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import RxSwift
 
 class MoreShowCaseViewController: UIViewController {
 
@@ -14,74 +15,46 @@ class MoreShowCaseViewController: UIViewController {
     var initData: MovieListResponse? {
         didSet {
             if let results = initData?.results {
-                data.append(contentsOf: results)
+                viewModel.obserableMovies.accept(results)
             }
         }
     }
     
-    private var data: [MovieResult] = []
-    private var currentPage: Int = 1
-    private var totalPage: Int = 1
+    private var disposeBag = DisposeBag()
     
-    private let movieModel = MovieModelImpl.shared
+    private let viewModel = MoreShowcaseViewModel()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        totalPage = initData?.totalPages ?? 1
-        currentPage = initData?.page ?? 1
         registerCollectionView()
+        subscribeMovies()
+        addCollectionViewPagingObserver()
     }
     
     private func registerCollectionView(){
-        collectionViewMoreShowCase.dataSource = self
         collectionViewMoreShowCase.delegate = self
         collectionViewMoreShowCase.registerForCell(identifier: ShowCaseCollectionViewCell.identifier)
     }
     
-    private func fetchTopRelatedMovie(page: Int){
-        movieModel.getTopRelatedMoveiList(page: page){ result in
-            switch result {
-            case .success(let movieListResponse):
-                self.currentPage = movieListResponse.page
-                self.totalPage = movieListResponse.totalPages ?? self.totalPage
-                self.data.append(contentsOf: movieListResponse.results ?? [])
-                self.collectionViewMoreShowCase.reloadData()
-            case .failure(let error):
-                debugPrint("Top Related Movie Error in \(page) > \(error.description)")
-            }
-        }
+    private func subscribeMovies(){
+        viewModel.obserableMovies
+            .bind(to: collectionViewMoreShowCase.rx.items(cellIdentifier: ShowCaseCollectionViewCell.identifier, cellType: ShowCaseCollectionViewCell.self)){ row, element, cell in
+                cell.data = element
+            }.disposed(by: disposeBag)
+    }
+    
+    private func addCollectionViewPagingObserver(){
+        collectionViewMoreShowCase.rx.willDisplayCell
+            .subscribe(onNext: {[weak self] value in
+                self?.viewModel.handlePagination(indexPath: value.at)
+            }).disposed(by: disposeBag)
     }
 }
 
-extension MoreShowCaseViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return data.count
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueCell(identifier: ShowCaseCollectionViewCell.identifier, indexPath: indexPath) as ShowCaseCollectionViewCell
-        cell.data = data[indexPath.row]
-        return cell
-    }
-    
+extension MoreShowCaseViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let itemWidth = collectionView.frame.width - 16
         let itemHeight = (itemWidth / 16) * 9
         return CGSize(width: itemWidth, height: itemHeight)
     }
-    
-    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        let isAtLastRow = indexPath.row == (data.count - 1)
-        let hasMoreMovie = currentPage < totalPage
-        if isAtLastRow && hasMoreMovie {
-            fetchTopRelatedMovie(page: currentPage + 1)
-        }
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if let movieId = data[indexPath.row].id {
-            navigateToFilmDetailViewController(movieId: movieId, isTVSeries: false)
-        }
-    }
-    
 }

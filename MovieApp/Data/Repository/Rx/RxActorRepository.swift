@@ -12,7 +12,8 @@ import RxCoreData
 import CoreData
 
 protocol RxActorRepository {
-    func getPopularActors() -> Observable<[ActorInfoResponse]>
+    func getPopularActors(page: Int) -> Observable<[ActorInfoResponse]>
+    func getPopularActorsWithoutPagination() -> Observable<[ActorInfoResponse]>
     func getDetails(id: Int) -> Observable<ActorDetailResponse?>
     func getMovieCredit(id: Int, isTVSeries: Bool) -> Observable<[MovieResult]>
 }
@@ -22,12 +23,24 @@ class RxActorRepositoryImpl: BaseRepository, RxActorRepository {
     static let shared : RxActorRepository = RxActorRepositoryImpl()
     private override init() {}
     
-    func getPopularActors() -> Observable<[ActorInfoResponse]> {
+    func getPopularActors(page: Int) -> Observable<[ActorInfoResponse]> {
+        let fetchRequest : NSFetchRequest<ActorEntity> = ActorEntity.fetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "popularity", ascending: false)]
+        fetchRequest.fetchOffset = page
+        fetchRequest.fetchLimit = (20 * page) - 20
+        return coreData.context.rx.entities(fetchRequest: fetchRequest)
+            .map{ $0.map{ $0.toActorInfoResponse()}}
+    }
+    
+    
+    func getPopularActorsWithoutPagination() -> Observable<[ActorInfoResponse]> {
         let fetchRequest : NSFetchRequest<ActorEntity> = ActorEntity.fetchRequest()
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "popularity", ascending: false)]
         return coreData.context.rx.entities(fetchRequest: fetchRequest)
             .map{ $0.map{ $0.toActorInfoResponse()}}
     }
+    
+    
     
     func getDetails(id: Int) -> Observable<ActorDetailResponse?> {
         let fetchRequest : NSFetchRequest<ActorEntity> = ActorEntity.fetchRequest()

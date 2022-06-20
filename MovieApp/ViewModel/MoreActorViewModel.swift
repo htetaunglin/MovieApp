@@ -20,13 +20,24 @@ class MoreActorViewModel{
         subscribeActors()
     }
     
-    private func subscribeActors(){
-        rxActorModel.subscribePopularActor()
-            .subscribe(onNext: actorResults.accept)
-            .disposed(by: disposeBag)
+    func subscribeActors(){
+        rxActorModel.subscribeAllPopularActor()
+        .subscribe(onNext: {[weak self] values in
+            self?.actorResults.accept(values)
+        })
+        .disposed(by: disposeBag)
     }
     
     func fetchActors(page: Int){
         rxActorModel.getPopularActor(page: page)
+    }
+    
+    func handlePagination(indexPath: IndexPath){
+        let totalItems = self.actorResults.value.count
+        let isAtLastRow = indexPath.row == (totalItems - 1)
+        if isAtLastRow {
+            let page = (totalItems / 20) + 1
+            self.fetchActors(page: page)
+        }
     }
 }

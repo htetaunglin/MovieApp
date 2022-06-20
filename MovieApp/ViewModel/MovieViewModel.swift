@@ -18,7 +18,6 @@ class MovieViewModel {
     private var observableTopRelatedMovie = BehaviorRelay<[MovieResult]>(value: [])
     private var observablePopularActors = BehaviorRelay<[ActorInfoResponse]>(value: [])
     
-    
     private let disposableBag = DisposeBag()
     
     private let rxMovieModel = RxMovieModelImpl.shared
@@ -82,8 +81,7 @@ class MovieViewModel {
     
     
     private func fetchPopularActors(){
-        rxActorModel.getPopularActor(page: 1)
-        rxActorModel.subscribePopularActor()
+        rxActorModel.getHomePopularActor(page: 1)
             .subscribe(onNext: observablePopularActors.accept)
             .disposed(by: disposableBag)
     }

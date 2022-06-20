@@ -15,13 +15,7 @@ class MoreActorsViewController: UIViewController {
     
     let viewModel: MoreActorViewModel = MoreActorViewModel()
     
-    var initData : [ActorInfoResponse]? {
-        didSet {
-            if let results = initData {
-                viewModel.actorResults.accept(results)
-            }
-        }
-    }
+    var initData : [ActorInfoResponse]?
     
     let disposeBag: DisposeBag = DisposeBag()
     
@@ -53,11 +47,7 @@ class MoreActorsViewController: UIViewController {
     private func addCollectionViewPagingObserver(){
         actorCollectionView.rx.willDisplayCell
             .subscribe(onNext: { [weak self] value in
-                let itemCount = self?.viewModel.actorResults.value.count ?? 0
-                let isAtLastRow = value.at.row == (itemCount - 1)
-                if(isAtLastRow) {
-                    self?.fetchActors(page: (itemCount / 20) + 1)
-                }
+                self?.viewModel.handlePagination(indexPath: value.at)
             }).disposed(by: disposeBag)
     }
     
@@ -68,10 +58,6 @@ class MoreActorsViewController: UIViewController {
                 self?.navigateToActorDetail(actorId: actorId)
             }
         }).disposed(by: disposeBag)
-    }
-    
-    private func fetchActors(page: Int){
-        viewModel.fetchActors(page: page)
     }
 }
 

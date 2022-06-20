@@ -12,6 +12,8 @@ protocol RxMovieModel {
     func getPopularMovieList() -> Observable<[MovieResult]>
     func getTopRelatedMovieList(page: Int) -> Observable<[MovieResult]>
     func getUpcomingMovieList() -> Observable<[MovieResult]>
+    
+    func subscribeTopRelatedMovies() -> Observable<[MovieResult]>
 }
 
 class RxMovieModelImpl: BaseModel, RxMovieModel {
@@ -42,8 +44,7 @@ class RxMovieModelImpl: BaseModel, RxMovieModel {
             self.movieRepo.saveList(type: contentType, data: response.results)
         }.disposed(by: disposeBag)
         //TODO Pagination
-        let observableLocalMovieList = movieRxRepo.getMoviesByGroupType(type: contentType)
-        return observableLocalMovieList
+        return subscribeTopRelatedMovies()
     }
     
     func getUpcomingMovieList() -> Observable<[MovieResult]> {
@@ -56,4 +57,9 @@ class RxMovieModelImpl: BaseModel, RxMovieModel {
         return observableLocalMovieList
     }
     
+    
+    func subscribeTopRelatedMovies() -> Observable<[MovieResult]> {
+        let observableLocalMovieList = movieRxRepo.getMoviesByGroupType(type: .topRatedMovies)
+        return observableLocalMovieList
+    }
 }
