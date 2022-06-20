@@ -31,20 +31,18 @@ extension UIViewController{
         self.navigationController?.pushViewController(vc, animated: true)
     }
     
-    func navigateToMoreActorsViewController(initData: [ActorInfoResponse]){
+    func navigateToMoreActorsViewController(){
         let vc = MoreActorsViewController()
         //Transition style
         vc.modalPresentationStyle = .fullScreen
-        vc.initData = initData
         self.navigationController?.pushViewController(vc, animated: true)
 //        present(vc, animated: true)
     }
     
-    func navigateToMoreShowCaseViewController(initData: MovieListResponse?){
+    func navigateToMoreShowCaseViewController(){
         let vc = MoreShowCaseViewController()
         //Transition style
         vc.modalPresentationStyle = .fullScreen
-        vc.initData = initData
         self.navigationController?.pushViewController(vc, animated: true)
 //        present(vc, animated: true)
     }

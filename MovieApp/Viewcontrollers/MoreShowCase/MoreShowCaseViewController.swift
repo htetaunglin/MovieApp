@@ -12,14 +12,6 @@ class MoreShowCaseViewController: UIViewController {
 
     @IBOutlet weak var collectionViewMoreShowCase: UICollectionView!
     
-    var initData: MovieListResponse? {
-        didSet {
-            if let results = initData?.results {
-                viewModel.obserableMovies.accept(results)
-            }
-        }
-    }
-    
     private var disposeBag = DisposeBag()
     
     private let viewModel = MoreShowcaseViewModel()

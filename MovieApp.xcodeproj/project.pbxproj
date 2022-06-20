@@ -123,6 +123,8 @@
 		99B049FA285EF51300E6FEC7 /* ActorDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99B049F9285EF51300E6FEC7 /* ActorDetailViewModel.swift */; };
 		99B049FC285EFAAF00E6FEC7 /* MoreActorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99B049FB285EFAAF00E6FEC7 /* MoreActorViewModel.swift */; };
 		99B049FE285F12D800E6FEC7 /* MoreShowcaseViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99B049FD285F12D800E6FEC7 /* MoreShowcaseViewModel.swift */; };
+		99B04A0028603F0800E6FEC7 /* RxGenerModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99B049FF28603F0800E6FEC7 /* RxGenerModel.swift */; };
+		99B04A02286040D900E6FEC7 /* RxGenreRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99B04A01286040D900E6FEC7 /* RxGenreRepository.swift */; };
 		99FAC8F1284F072200EC907D /* RxMovieDetailModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99FAC8F0284F072200EC907D /* RxMovieDetailModel.swift */; };
 		99FAC8F3284F838D00EC907D /* RxSeriesDetailModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99FAC8F2284F838D00EC907D /* RxSeriesDetailModel.swift */; };
 /* End PBXBuildFile section */
@@ -245,6 +247,8 @@
 		99B049F9285EF51300E6FEC7 /* ActorDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActorDetailViewModel.swift; sourceTree = "<group>"; };
 		99B049FB285EFAAF00E6FEC7 /* MoreActorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoreActorViewModel.swift; sourceTree = "<group>"; };
 		99B049FD285F12D800E6FEC7 /* MoreShowcaseViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoreShowcaseViewModel.swift; sourceTree = "<group>"; };
+		99B049FF28603F0800E6FEC7 /* RxGenerModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RxGenerModel.swift; sourceTree = "<group>"; };
+		99B04A01286040D900E6FEC7 /* RxGenreRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RxGenreRepository.swift; sourceTree = "<group>"; };
 		99FAC8F0284F072200EC907D /* RxMovieDetailModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RxMovieDetailModel.swift; sourceTree = "<group>"; };
 		99FAC8F2284F838D00EC907D /* RxSeriesDetailModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RxSeriesDetailModel.swift; sourceTree = "<group>"; };
 		A7431C05D6A7AD89BA469C0C /* Pods-MovieApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MovieApp.release.xcconfig"; path = "Target Support Files/Pods-MovieApp/Pods-MovieApp.release.xcconfig"; sourceTree = "<group>"; };
@@ -481,6 +485,7 @@
 				990FE4E7284B1EB70039F7B8 /* RxMovieRepository.swift */,
 				990FE5B7284B3F660039F7B8 /* RxActorRepository.swift */,
 				99555128284C94F70094038C /* RxContentTypeRepository.swift */,
+				99B04A01286040D900E6FEC7 /* RxGenreRepository.swift */,
 			);
 			path = Rx;
 			sourceTree = "<group>";
@@ -562,6 +567,7 @@
 				99FAC8F0284F072200EC907D /* RxMovieDetailModel.swift */,
 				99FAC8F2284F838D00EC907D /* RxSeriesDetailModel.swift */,
 				9961A2D328546DF400DC6242 /* RxActorDetailModel.swift */,
+				99B049FF28603F0800E6FEC7 /* RxGenerModel.swift */,
 			);
 			path = Rx;
 			sourceTree = "<group>";
@@ -927,6 +933,7 @@
 				990FE57D284B1EB70039F7B8 /* ProductionCompanyEntity+Extension.swift in Sources */,
 				990FE553284B1EB70039F7B8 /* SearchViewController.swift in Sources */,
 				990FE5A8284B1EB70039F7B8 /* MovieSliderCollectionViewCell.swift in Sources */,
+				99B04A0028603F0800E6FEC7 /* RxGenerModel.swift in Sources */,
 				990FE58C284B1EB70039F7B8 /* RealmDB.swift in Sources */,
 				990FE56B284B1EB70039F7B8 /* ContentTypeRepository.swift in Sources */,
 				990FE57B284B1EB70039F7B8 /* ProductionCountryEntity+Extension.swift in Sources */,
@@ -1004,6 +1011,7 @@
 				990FE56D284B1EB70039F7B8 /* ActorType.swift in Sources */,
 				990FE566284B1EB70039F7B8 /* ActorRepository.swift in Sources */,
 				990FE571284B1EB70039F7B8 /* MovieCreditResponse.swift in Sources */,
+				99B04A02286040D900E6FEC7 /* RxGenreRepository.swift in Sources */,
 				99FAC8F1284F072200EC907D /* RxMovieDetailModel.swift in Sources */,
 				990FE55A284B1EB70039F7B8 /* YoutubePlayerViewController.swift in Sources */,
 				9961A2D72854861C00DC6242 /* CDObservable.swift in Sources */,

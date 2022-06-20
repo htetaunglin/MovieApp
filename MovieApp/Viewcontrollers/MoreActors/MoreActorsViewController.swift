@@ -15,8 +15,6 @@ class MoreActorsViewController: UIViewController {
     
     let viewModel: MoreActorViewModel = MoreActorViewModel()
     
-    var initData : [ActorInfoResponse]?
-    
     let disposeBag: DisposeBag = DisposeBag()
     
     override func viewDidLoad() {

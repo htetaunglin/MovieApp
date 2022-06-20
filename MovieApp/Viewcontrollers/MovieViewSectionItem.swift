@@ -13,7 +13,7 @@ enum SectionItem {
     case popularMovieSection(items: [MovieResult])
     case popularSeriesSection(items: [MovieResult])
     case movieShowTimeSection
-    case movieGenreSection(items: [MovieGenre])
+    case movieGenreSection(items: [MovieGenre], movies: [MovieResult])
     case showcaseMovieSection(items: [MovieResult])
     case bestActorSection(items: [ActorInfoResponse])
 }

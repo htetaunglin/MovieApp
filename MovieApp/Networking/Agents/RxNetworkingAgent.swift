@@ -106,4 +106,10 @@ class RxNetworkingAgent : RxNetworkingAgentProtocol {
             .requestDecodable(MDBEndpoint.actorMovieCredit(id))
             .flatMap{ Observable.just($0.1) }
     }
+    
+    func getGenreList() -> Observable<MovieGenreList> {
+        return RxAlamofire
+            .requestDecodable(MDBEndpoint.movieGenre)
+            .flatMap{ Observable.just($0.1) }
+    }
 }

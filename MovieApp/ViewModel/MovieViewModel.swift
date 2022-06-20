@@ -12,17 +12,19 @@ import RxCocoa
 class MovieViewModel {
     
     var homeItemList = BehaviorRelay<[HomeMovieSectionModel]>(value: [])
-    private var observablePopularMovies = BehaviorRelay<[MovieResult]>(value: [])
-    private var observableUpcomingMovies = BehaviorRelay<[MovieResult]>(value: [])
-    private var observablePopularSeries = BehaviorRelay<[MovieResult]>(value: [])
-    private var observableTopRelatedMovie = BehaviorRelay<[MovieResult]>(value: [])
-    private var observablePopularActors = BehaviorRelay<[ActorInfoResponse]>(value: [])
+    var observablePopularMovies = BehaviorRelay<[MovieResult]>(value: [])
+    var observableUpcomingMovies = BehaviorRelay<[MovieResult]>(value: [])
+    var observablePopularSeries = BehaviorRelay<[MovieResult]>(value: [])
+    var observableTopRelatedMovie = BehaviorRelay<[MovieResult]>(value: [])
+    var observablePopularActors = BehaviorRelay<[ActorInfoResponse]>(value: [])
+    var observableGenres = BehaviorRelay<[MovieGenre]>(value: [])
     
     private let disposableBag = DisposeBag()
     
     private let rxMovieModel = RxMovieModelImpl.shared
     private let rxSeriesModel = RxSeriesModelImpl.shared
     private let rxActorModel = RxActorModelImpl.shared
+    private let rxGenreModel = RxGenreModelImpl.shared
     
     
     init(){
@@ -30,10 +32,10 @@ class MovieViewModel {
     }
     
     private func initObserver(){
-        Observable.combineLatest(observablePopularMovies, observableUpcomingMovies, observablePopularSeries, observableTopRelatedMovie, observablePopularActors)
+        Observable.combineLatest(observablePopularMovies, observableUpcomingMovies, observablePopularSeries, observableTopRelatedMovie, observablePopularActors, observableGenres)
             .throttle(.seconds(1), scheduler: MainScheduler.instance)
             .subscribe{
-                popularMovies, upcomingMovies, popularSeries, topRelatedMovies, popularActors  in
+                popularMovies, upcomingMovies, popularSeries, topRelatedMovies, popularActors, genres  in
                 var items = [HomeMovieSectionModel]()
                 
                 items.append(HomeMovieSectionModel.movieResult(items: [.upComingMovieSection(items: upcomingMovies)]))
@@ -41,6 +43,7 @@ class MovieViewModel {
                 items.append(HomeMovieSectionModel.movieResult(items: [.popularSeriesSection(items: popularSeries)]))
                 items.append(HomeMovieSectionModel.movieResult(items: [.movieShowTimeSection]))
                 items.append(HomeMovieSectionModel.movieResult(items: [.showcaseMovieSection(items: topRelatedMovies)]))
+                items.append(HomeMovieSectionModel.genreResult(items: [.movieGenreSection(items: genres, movies: popularMovies + upcomingMovies + topRelatedMovies + popularSeries)]))
                 items.append(HomeMovieSectionModel.actorResult(items: [.bestActorSection(items: popularActors)]))
                 self.homeItemList.accept(items)
             }
@@ -53,6 +56,7 @@ class MovieViewModel {
         fetchPopularSeries()
         fetchTopRelatedMovies()
         fetchPopularActors()
+        fetchGenres()
     }
     
     private func fetchUpcomingMovies(){
@@ -83,6 +87,12 @@ class MovieViewModel {
     private func fetchPopularActors(){
         rxActorModel.getHomePopularActor(page: 1)
             .subscribe(onNext: observablePopularActors.accept)
+            .disposed(by: disposableBag)
+    }
+    
+    private func fetchGenres(){
+        rxGenreModel.getGenreList()
+            .subscribe(onNext: observableGenres.accept)
             .disposed(by: disposableBag)
     }
     

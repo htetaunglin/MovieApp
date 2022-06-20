@@ -31,4 +31,7 @@ protocol RxNetworkingAgentProtocol {
     func getActorDetail(_ id: Int) -> Observable<ActorDetailResponse>
     func getActorMovieCredit(_ id: Int) -> Observable<ActorMovieCreditResponse>
     func getActorTVCredit(_ id: Int) -> Observable<CastTVCreditResponse>
+    
+    /// Genre
+    func getGenreList() -> Observable<MovieGenreList>
 }
